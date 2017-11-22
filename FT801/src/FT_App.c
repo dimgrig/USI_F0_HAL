@@ -792,7 +792,7 @@ ft_uint32_t Ft_DlBuffer_Index;
 //}
 
 
-ft_void_t __SAMAPP_BootupConfig(Ft_Gpu_Hal_Context_t *phost)
+ft_void_t FT_APP_BootupConfig(Ft_Gpu_Hal_Context_t *phost)
 {
 	/* Do a power cycle for safer side */
 	HAL_GPIO_WritePin(GPIOB, FT800_PD_N, GPIO_PIN_SET); 	// Initial state of PD_N - high
@@ -908,7 +908,7 @@ ft_void_t __SAMAPP_BootupConfig(Ft_Gpu_Hal_Context_t *phost)
 
 	  //    Ft_Gpu_Hal_Wr8(phost, REG_PCLK,FT_DispPCLK);//after this display is visible on the LCD
 
-	  __SAMAPP_API_Calibrate(0); // работает
+	  FT_APP_Calibrate(0); // работает
 
 	  //Ft_Gpu_Hal_Sleep(50);//Show the booting up screen.
 
@@ -950,7 +950,7 @@ ft_void_t __SAMAPP_BootupConfig(Ft_Gpu_Hal_Context_t *phost)
 
 
 
-ft_void_t __SAMAPP_API_Calibrate(ft_uint8_t mode)
+ft_void_t FT_APP_Calibrate(ft_uint8_t mode)
 {
 	ft_uint32_t REG_TOUCH_CALIBRATE_A;
 	ft_uint32_t REG_TOUCH_CALIBRATE_B;
@@ -1018,7 +1018,7 @@ ft_void_t __SAMAPP_API_Calibrate(ft_uint8_t mode)
 
 
 
-ft_void_t __SAMAPP_API_Screen_Content(Ft_Gpu_Hal_Context_t *phost,
+ft_void_t FT_APP_Screen_Content(Ft_Gpu_Hal_Context_t *phost,
 		Screen_TypeDef SCREEN, State_TypeDef STATE,
 		ft_uint16_t tag,
 		ft_uint16_t dloffset,
@@ -1348,7 +1348,7 @@ ft_void_t __SAMAPP_API_Screen_Content(Ft_Gpu_Hal_Context_t *phost,
 }
 
 
-ft_uint16_t __API_Screen_BasicScreen(Ft_Gpu_Hal_Context_t *phost, Screen_TypeDef SCREEN)
+ft_uint16_t FT_APP_Screen_BasicScreen(Ft_Gpu_Hal_Context_t *phost, Screen_TypeDef SCREEN)
 {
 	unsigned int cmdBufferRd = 0x0000;											// Used to navigate command ring buffer
 	unsigned int cmdBufferWr = 0x0000;											// Used to navigate command ring buffer
@@ -1426,7 +1426,7 @@ ft_uint16_t __API_Screen_BasicScreen(Ft_Gpu_Hal_Context_t *phost, Screen_TypeDef
 
 	switch (SCREEN){
 		case MAIN:
-			__API_Screen_MainScreen(phost);
+			FT_APP_Screen_MainScreen(phost);
 		break;
 		case SETTINGS:
 			;//API_Screen_SettingsScreen(phost, SCREEN);
@@ -1496,7 +1496,7 @@ ft_uint16_t __API_Screen_BasicScreen(Ft_Gpu_Hal_Context_t *phost, Screen_TypeDef
 
 }
 
-void __API_Screen_MainScreen(Ft_Gpu_Hal_Context_t *phost)
+void FT_APP_Screen_MainScreen(Ft_Gpu_Hal_Context_t *phost)
 {
 	cmd(white);
 	cmd_text(2, 7, R_FONT, 0, "\x21\x20\x18\x02\x12\x02\x1e\x14\x42"); //Показания
@@ -1539,7 +1539,7 @@ void __API_Screen_MainScreen(Ft_Gpu_Hal_Context_t *phost)
 
 }
 
-ft_void_t SAMAPP_API_Screen(Ft_Gpu_Hal_Context_t *phost, ft_char8_t *str)
+ft_void_t FT_APP_Screen(Ft_Gpu_Hal_Context_t *phost, ft_char8_t *str)
 {
 	unsigned int cmdBufferRd = 0x0000;											// Used to navigate command ring buffer
 	unsigned int cmdBufferWr = 0x0000;											// Used to navigate command ring buffer
@@ -1671,147 +1671,4 @@ void API_Screen_Test()
 
 
 
-
-
-
-ft_uint16_t __SAMAPP_API_Screen_BackGround(Ft_Gpu_Hal_Context_t *phost, ft_char8_t *str)
-{
-	unsigned int cmdBufferRd = 0x0000;											// Used to navigate command ring buffer
-	unsigned int cmdBufferWr = 0x0000;											// Used to navigate command ring buffer
-	unsigned int cmdOffset = 0x0000;												// Used to navigate command rung buffer
-
-	//Ft_Gpu_Hal_WrMemFromFlash(phost, RAM_G + 1000, SAMApp_Metric_L1, SAMApp_Metric_L1_SIZE); //загружаем метрику шрифта
-	//Ft_Gpu_Hal_WrMemFromFlash(phost, RAM_G + 1000 + SAMApp_Metric_L1_SIZE, SAMApp_L1, SAMApp_L1_SIZE); //загружаем шрифт
-
-	for (int i = 0; i < SAMApp_Metric_L1_SIZE; i++){
-		ft800memWrite8(RAM_G + 1000 + i, SAMApp_Metric_L1[i]);
-	}
-	for (int i = 0; i < SAMApp_L1_SIZE; i++){
-		ft800memWrite8(RAM_G + 1000 + i + SAMApp_Metric_L1_SIZE, SAMApp_L1[i]);
-	}
-
-	do
-	{
-		cmdBufferRd = ft800memRead16(REG_CMD_READ);															// Read the graphics processor read pointer
-		cmdBufferWr = ft800memRead16(REG_CMD_WRITE); 														// Read the graphics processor write pointer
-	} while (cmdBufferWr != cmdBufferRd);
-	cli = cmdBufferWr;
-	cli = 0;
-
-	ft800memWrite32(REG_CMD_WRITE, 0);
-	ft800memWrite32(REG_CMD_READ, 0);
-
-	cmd_dlstart();
-
-	cmd(DL_CLEAR_RGB | 0x010101UL);
-	cmd(DL_CLEAR | CLR_COL | CLR_STN | CLR_TAG);
-
-	cmd(COLOR_RGB(255, 0, 0));// установка цвета текста
-
-
-	cmd(BITMAP_HANDLE(12)); //назначение нашему шрифту указателя
-	cmd(BITMAP_SOURCE(1085));
-	cmd(BITMAP_LAYOUT(L1,3,21));
-	cmd(BITMAP_SIZE(NEAREST,BORDER,BORDER,18,21));
-	cmd(CMD_SETFONT);
-	cmd(12);
-	cmd(RAM_G + 1000);
-	//Ft_Gpu_CoCmd_SetFont(phost, 12, RAM_G + 1000);
-
-
-
-	//cmd_text( 10, 10, 12, 0, "\x21\x24\x14\x06\x0c\x28\x43\x5b\x5d");
-
-	//cmd_text( 10, 30, 12, 0, "\x58\x59\x5a");
-
-	cmd(BEGIN(RECTS));
-//	cmd(VERTEX2II(1, 203, 0, 0));
-//	cmd(COLOR_RGB(22, 23, 26));
-//	cmd(VERTEX2II(496, 291, 0, 0));
-	cmd(VERTEX2II(0, 30, 0, 0));
-	cmd(VERTEX2II(300, 30, 0, 0));
-	cmd(VERTEX2II(0, 50, 0, 0));
-	cmd(VERTEX2II(300, 50, 0, 0));
-	cmd(VERTEX2II(160, 0, 0, 0));
-	cmd(VERTEX2II(160, 120, 0, 0));
-	cmd(END());
-
-	//  Ft_Gpu_CoCmd_Dlstart(phost); // команда начала дисплей-листа
-
-	  //Ft_Gpu_CoCmd_Dlstart(phost);
-	//  Ft_App_WrCoCmd_Buffer(phost,CLEAR_COLOR_RGB(0,0,0));
-	//  Ft_App_WrCoCmd_Buffer(phost,CLEAR(0xff,0xff,0xff));
-
-
-	  //Ft_App_WrCoCmd_Buffer(phost,CLEAR_COLOR_RGB(0xff,0xff,0xff)); //установка цвета фона
-	//  Ft_App_WrCoCmd_Buffer(phost,CLEAR(1,1,1)); //установка цвета фона
-	//  Ft_App_WrCoCmd_Buffer(phost,COLOR_RGB(255,0,0)); // установка цвета текста
-
-
-//	  Ft_App_WrCoCmd_Buffer(phost,BITMAP_HANDLE(12)); //назначение нашему шрифту указателя
-//	  Ft_App_WrCoCmd_Buffer(phost,BITMAP_SOURCE(1085));
-//	  Ft_App_WrCoCmd_Buffer(phost, BITMAP_LAYOUT(L1,3,21));
-//	  Ft_App_WrCoCmd_Buffer(phost, BITMAP_SIZE(NEAREST, BORDER,BORDER,18,21));
-//	  Ft_Gpu_CoCmd_SetFont(phost, 12, RAM_G + 1000);
-
-
-
-//	Ft_App_WrCoCmd_Buffer(phost,COLOR_RGB(0x00,0xff,0x00));
-//	Ft_Gpu_CoCmd_Text(phost, 10, 10, 12, 0, "\x21\x24\x14\x06\x0c\x28\x43\x5b\x5d");
-//	//Ft_Gpu_CoCmd_Text(phost, 10, 10, 16, 0, str);
-//	Ft_App_WrCoCmd_Buffer(phost,COLOR_RGB(0xff,0x00,0x00));
-//	Ft_Gpu_CoCmd_Text(phost, 10, 30, 12, 0, "\x58\x59\x5a");
-//	//Ft_Gpu_CoCmd_Text(phost, 10, 30, 16, 0, 777);
-
-//	Ft_App_WrCoCmd_Buffer(phost,BEGIN(LINES));
-//	Ft_App_WrCoCmd_Buffer(phost,VERTEX2II(0, 30, 0, 0));
-//	Ft_App_WrCoCmd_Buffer(phost,VERTEX2II(300, 30, 0, 0));
-//	Ft_App_WrCoCmd_Buffer(phost,VERTEX2II(0, 50, 0, 0));
-//	Ft_App_WrCoCmd_Buffer(phost,VERTEX2II(300, 50, 0, 0));
-//	Ft_App_WrCoCmd_Buffer(phost,VERTEX2II(160, 0, 0, 0));
-//	Ft_App_WrCoCmd_Buffer(phost,VERTEX2II(160, 120, 0, 0));
-//	Ft_App_WrCoCmd_Buffer(phost,END());
-
-
-
-
-	//Ft_App_WrCoCmd_Buffer(phost,DISPLAY());
-	//Ft_Gpu_CoCmd_Swap(phost);
-
-//	Ft_App_Flush_Co_Buffer(phost);
-//	Ft_Gpu_Hal_WaitCmdfifo_empty(phost);
-//	//while(0!=Ft_Gpu_Hal_Rd16(phost,REG_CMD_READ));
-//
-//	ft_uint16_t dloffset = 0;
-//	ft_uint16_t dloffset = Ft_Gpu_Hal_Rd16(phost,REG_CMD_DL); // размер коируемого дисплей-листа
-//	//dloffset -= 4;
-//	Ft_Gpu_Hal_WrCmd32(phost,CMD_MEMCPY); // указание FT800 скопировать области памяти
-//	Ft_Gpu_Hal_WrCmd32(phost,100000L); // адрес, куда будем копировать в области графической памяти RAM_G
-//	Ft_Gpu_Hal_WrCmd32(phost,RAM_DL); // адрес, откуда копируем
-//	Ft_Gpu_Hal_WrCmd32(phost,dloffset); // количество байт
-
-	ft_uint16_t dloffset = cli;// ft800memRead16(REG_CMD_DL); // размер коируемого дисплей-листа
-
-	cmd(CMD_MEMCPY); // указание FT800 скопировать области памяти
-	cmd(100000L); // адрес, куда будем копировать в области графической памяти RAM_G
-	cmd(RAM_DL); // адрес, откуда копируем
-	cmd(dloffset); // количество байт
-
-	//cmd(DL_END);
-	//cmd(DL_DISPLAY);
-	//cmd(CMD_SWAP);
-
-	//ft800memWrite16(REG_CMD_WRITE, cli);
-		/* Download the commands into fifo */
-		//Ft_App_Flush_Co_Buffer(phost);
-
-		/* Wait till coprocessor completes the operation */
-		//Ft_Gpu_Hal_WaitCmdfifo_empty(phost);
-
-	Ft_Gpu_Hal_Sleep(50);
-
-	cli__ = cli;
-	return dloffset;
-
-}
 

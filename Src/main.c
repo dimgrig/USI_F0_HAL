@@ -151,22 +151,13 @@ int main(void)
 
   /* USER CODE BEGIN 2 */
 
-  	Ft_Gpu_HalInit_t halinit;
 	Ft_Gpu_Hal_Context_t host,*phost;
-//	halinit.TotalChannelNum = 1;
-//	Ft_Gpu_Hal_Init(&halinit);
-//	host.hal_config.channel_no = 0;
-//	host.hal_config.spi_clockrate_khz = 2000; //in KHz
-//	Ft_Gpu_Hal_Open(&host);
 	phost = &host;
-
-//	HAL_Delay(50);
-	__SAMAPP_BootupConfig(phost);
+	FT_APP_BootupConfig(phost);
 	//SAMAPP_API_Screen(phost, "TestTest");
 	dloffset = 0;
-	dloffset = __API_Screen_BasicScreen(phost, SCREEN);
+	dloffset = FT_APP_Screen_BasicScreen(phost, SCREEN);
 
-	HAL_Delay(50);
 
 	uint16_t flag = 1;
 	init_finished = 1;
@@ -191,26 +182,26 @@ int main(void)
 
 	  if (tag != 0){
 
-	  	  __SAMAPP_API_Screen_Content(phost, SCREEN, STATE, tag, dloffset, F, A, A0, H, F1, A1, E, HB, ST, SB, init_finished);
+		  FT_APP_Screen_Content(phost, SCREEN, STATE, tag, dloffset, F, A, A0, H, F1, A1, E, HB, ST, SB, init_finished);
 
 		  switch (tag){
 			case 1:
 				switch (SCREEN){
 					case MAIN:
 						SCREEN = SETTINGS;
-						dloffset = __API_Screen_BasicScreen(phost, SCREEN);
+						dloffset = FT_APP_Screen_BasicScreen(phost, SCREEN);
 					break;
 					case SETTINGS:
 						SCREEN = MAIN;
-						dloffset = __API_Screen_BasicScreen(phost, SCREEN);
+						dloffset = FT_APP_Screen_BasicScreen(phost, SCREEN);
 					break;
 					case MATERIAL:
 						SCREEN = SETTINGS;
-						dloffset = __API_Screen_BasicScreen(phost, SCREEN);
+						dloffset = FT_APP_Screen_BasicScreen(phost, SCREEN);
 					break;
 					case CALIBRATION:
 						SCREEN = SETTINGS;
-						dloffset = __API_Screen_BasicScreen(phost, SCREEN);
+						dloffset = FT_APP_Screen_BasicScreen(phost, SCREEN);
 					break;
 				}
 			break;
@@ -241,12 +232,12 @@ int main(void)
 					break;
 				}
 
-				__SAMAPP_API_Screen_Content(phost, SCREEN, STATE, tag, dloffset, F, A, A0, H, F1, A1, E, HB, ST, SB, init_finished);
+				FT_APP_Screen_Content(phost, SCREEN, STATE, tag, dloffset, F, A, A0, H, F1, A1, E, HB, ST, SB, init_finished);
 				flag = 1;
 			break;
 			case 3:
 				STATE = IDLE;
-				__SAMAPP_API_Screen_Content(phost, SCREEN, STATE, tag, dloffset, F, A, A0, H, F1, A1, E, HB, ST, SB, init_finished);
+				FT_APP_Screen_Content(phost, SCREEN, STATE, tag, dloffset, F, A, A0, H, F1, A1, E, HB, ST, SB, init_finished);
 				flag = 0;
 			break;
 			case 4:
@@ -255,7 +246,7 @@ int main(void)
 					break;
 					case SETTINGS:
 						SCREEN = MATERIAL;
-						dloffset = __API_Screen_BasicScreen(phost, SCREEN);
+						dloffset = FT_APP_Screen_BasicScreen(phost, SCREEN);
 					break;
 					case MATERIAL:
 					break;
@@ -269,7 +260,7 @@ int main(void)
 					break;
 					case SETTINGS:
 						SCREEN = CALIBRATION;
-						dloffset = __API_Screen_BasicScreen(phost, SCREEN);
+						dloffset = FT_APP_Screen_BasicScreen(phost, SCREEN);
 					break;
 					case MATERIAL:
 					break;
@@ -290,7 +281,7 @@ int main(void)
 		  }
 
 	  } else {
-		  __SAMAPP_API_Screen_Content(phost, SCREEN, STATE, tag, dloffset, F, A, A0, H, F1, A1, E, HB, ST, SB, init_finished);
+		  FT_APP_Screen_Content(phost, SCREEN, STATE, tag, dloffset, F, A, A0, H, F1, A1, E, HB, ST, SB, init_finished);
 	  }
 
 	  USB_Send_DataPair(STATE, F, A);
