@@ -214,38 +214,28 @@ ft_void_t FT_APP_Screen_Content(Screen_TypeDef SCREEN, State_TypeDef STATE,
 	cmd_append(10000L, dloffset);
 
 	cmd(COLOR_RGB(0xff, 0xd8, 0));// установка цвета текста
-	cmd_number(10, 60, 16, 0, nmb);
+	#ifdef ADMIN_INFO
+		cmd_number(10, 60, 16, 0, nmb);
+	#endif
 
 	switch (SCREEN){
 		case MAIN:
-			//Ft_App_WrCoCmd_Buffer(phost,CLEAR_COLOR_RGB(0,0,0));
-			//Ft_App_WrCoCmd_Buffer(phost,CLEAR(0xff,0xff,0xff));
-
-			//Ft_App_WrCoCmd_Buffer(phost,COLOR_RGB(0x00,0x00,0xff));
-			//Ft_Gpu_CoCmd_Text(phost, 10, 50, 16, 0, "CONTENT");
-			cmd(COLOR_RGB(0xff, 0xd8, 0)); //Ft_App_WrCoCmd_Buffer(phost,COLOR_RGB(0xff,0xd8,0x00));
-			//Ft_Gpu_CoCmd_Number(phost, 10, 60, 16, 0, nmb);
-			//Ft_Gpu_CoCmd_Number(phost, 10, 70, 16, 0, STATE);
 
 			sprintf(value_c, "%d.%d", (int)F, (int)( ( F - floor(F) ) * pow(10, 1) ));
-			cmd_text(155, 7, 22, 0, value_c); //Ft_Gpu_CoCmd_Text(phost, 155, 7, 22, 0, value_c);
+			cmd_text(155, 7, 22, 0, value_c);
 			sprintf(value_c, "%d.%d", (int)A, (int)( ( A - floor(A) ) * pow(10, 3) ));
-			cmd_text(265, 7, 22, 0, value_c); //Ft_Gpu_CoCmd_Text(phost, 265, 7, 22, 0, value_c);
-
+			cmd_text(265, 7, 22, 0, value_c);
 
 			switch (STATE)
 		    {
 			case IDLE:
-			  //placeValuesReset();
 				cmd(TAG_MASK(1));
 				cmd(TAG(2));
-				//cmd_track(110, 190, 100, 40, 2);          // assign the tag value
 				cmd_fgcolor((tag==2)?button_color_hover:button_color);
 				cmd_button(110, 190, 100, 40, R_FONT, 0, "\x21\x2a\x26\x18");
 				cmd(TAG_MASK(0));
 			break;
 			case TOUCH:
-			  //placeValuesReset();
 				cmd(TAG_MASK(1));
 				cmd(TAG(2));          // assign the tag value
 				cmd_fgcolor((tag==2)?button_color_hover:button_color);
@@ -320,7 +310,6 @@ ft_void_t FT_APP_Screen_Content(Screen_TypeDef SCREEN, State_TypeDef STATE,
 
 		break;
 		case SETTINGS:
-			//tag = Ft_Gpu_Hal_Rd8(phost,REG_TOUCH_TAG);
 
 			cmd(TAG_MASK(1));
 			cmd(TAG(1));          // assign the tag value
@@ -405,9 +394,11 @@ ft_void_t FT_APP_Screen_Content(Screen_TypeDef SCREEN, State_TypeDef STATE,
 		break;
 	}
 
-	cmd_number(10, 90, 16, 0, cli__);
-	cmd_number(10, 110, 16, 0, cli);
-	cmd_number(10, 130, 16, 0, tag);
+	#ifdef ADMIN_INFO
+		cmd_number(10, 90, 16, 0, cli__);
+		cmd_number(10, 110, 16, 0, cli);
+		cmd_number(10, 130, 16, 0, tag);
+	#endif
 
 	cmd(DL_END);
 	cmd(DISPLAY());//cmd(DL_DISPLAY);

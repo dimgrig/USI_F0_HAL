@@ -20,9 +20,3 @@ typedef enum
 	CALIBRATION  = 0x03  /*!<  */
 }Screen_TypeDef;
 
-
-uint16_t SPI_SendRecvByte (unsigned char byte_s);
-void delay_ms( unsigned short ms);
-
-void SPI_SendData(SPI_TypeDef* SPIx, uint16_t Data);
-uint16_t SPI_ReceiveData(SPI_TypeDef* SPIx);

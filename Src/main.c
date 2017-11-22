@@ -54,10 +54,10 @@
 #include "t14-usb.h"
 #include "t14-math.h"
 
-#include "GUI.h"
 #include "FT_Platform.h"
 #include "SampleApp.h"
 #include "FT80x.h"
+
 /* USER CODE BEGIN Includes */
 
 /* USER CODE END Includes */
@@ -87,6 +87,9 @@ static void MX_TIM2_Init(void);
 /* USER CODE END PFP */
 
 /* USER CODE BEGIN 0 */
+
+//#define ADMIN_INFO
+
 //#define FILTERING
 #ifdef FILTERING
 	#define SPS 5000
