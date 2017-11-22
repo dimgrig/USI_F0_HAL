@@ -88,11 +88,13 @@ static void MX_TIM2_Init(void);
 
 /* USER CODE BEGIN 0 */
 //#define FILTERING
-#define SPS 5000
-#define Trc 0.001f
-#define K (SPS*Trc)
-static uint32_t Dacc = 0;
-static uint32_t Dout = 0;
+#ifdef FILTERING
+	#define SPS 5000
+	#define Trc 0.001f
+	#define K (SPS*Trc)
+	static uint32_t Dacc = 0;
+	static uint32_t Dout = 0;
+#endif
 
 uint16_t init_finished = 0;
 
@@ -151,19 +153,14 @@ int main(void)
 
   /* USER CODE BEGIN 2 */
 
-	Ft_Gpu_Hal_Context_t host,*phost;
-	phost = &host;
-	FT_APP_BootupConfig(phost);
-	//SAMAPP_API_Screen(phost, "TestTest");
-	dloffset = 0;
-	dloffset = FT_APP_Screen_BasicScreen(phost, SCREEN);
+  FT_APP_BootupConfig();
+  dloffset = FT_APP_Screen_BasicScreen(SCREEN);
 
+  uint16_t flag = 1;
+  init_finished = 1;
 
-	uint16_t flag = 1;
-	init_finished = 1;
-
-	HAL_TIM_Base_Start_IT(&htim2);
-	HAL_ADC_Start_DMA(&hadc,(uint32_t *)&DMA_BUFFER[0],DMA_BUFFER_SIZE);
+  HAL_TIM_Base_Start_IT(&htim2);
+  HAL_ADC_Start_DMA(&hadc,(uint32_t *)&DMA_BUFFER[0],DMA_BUFFER_SIZE);
 
   /* USER CODE END 2 */
 
@@ -174,34 +171,30 @@ int main(void)
   /* USER CODE END WHILE */
 	  HAL_GPIO_TogglePin(GPIOB, GPIO_PIN_10);
 
-	  //SAMAPP_API_Screen(phost, "TestTest");
-	  //API_Screen_Test();//черный фон и белая точка
-	  //SAMAPP_API_Test_Screen_Content(phost, SCREEN, STATE, 0, dloffset);
-
 	  int tag = ft800memRead8(REG_TOUCH_TAG);
 
 	  if (tag != 0){
 
-		  FT_APP_Screen_Content(phost, SCREEN, STATE, tag, dloffset, F, A, A0, H, F1, A1, E, HB, ST, SB, init_finished);
+		  FT_APP_Screen_Content(SCREEN, STATE, tag, dloffset, F, A, A0, H, F1, A1, E, HB, ST, SB, init_finished);
 
 		  switch (tag){
 			case 1:
 				switch (SCREEN){
 					case MAIN:
 						SCREEN = SETTINGS;
-						dloffset = FT_APP_Screen_BasicScreen(phost, SCREEN);
+						dloffset = FT_APP_Screen_BasicScreen(SCREEN);
 					break;
 					case SETTINGS:
 						SCREEN = MAIN;
-						dloffset = FT_APP_Screen_BasicScreen(phost, SCREEN);
+						dloffset = FT_APP_Screen_BasicScreen(SCREEN);
 					break;
 					case MATERIAL:
 						SCREEN = SETTINGS;
-						dloffset = FT_APP_Screen_BasicScreen(phost, SCREEN);
+						dloffset = FT_APP_Screen_BasicScreen(SCREEN);
 					break;
 					case CALIBRATION:
 						SCREEN = SETTINGS;
-						dloffset = FT_APP_Screen_BasicScreen(phost, SCREEN);
+						dloffset = FT_APP_Screen_BasicScreen(SCREEN);
 					break;
 				}
 			break;
@@ -232,12 +225,12 @@ int main(void)
 					break;
 				}
 
-				FT_APP_Screen_Content(phost, SCREEN, STATE, tag, dloffset, F, A, A0, H, F1, A1, E, HB, ST, SB, init_finished);
+				FT_APP_Screen_Content(SCREEN, STATE, tag, dloffset, F, A, A0, H, F1, A1, E, HB, ST, SB, init_finished);
 				flag = 1;
 			break;
 			case 3:
 				STATE = IDLE;
-				FT_APP_Screen_Content(phost, SCREEN, STATE, tag, dloffset, F, A, A0, H, F1, A1, E, HB, ST, SB, init_finished);
+				FT_APP_Screen_Content(SCREEN, STATE, tag, dloffset, F, A, A0, H, F1, A1, E, HB, ST, SB, init_finished);
 				flag = 0;
 			break;
 			case 4:
@@ -246,7 +239,7 @@ int main(void)
 					break;
 					case SETTINGS:
 						SCREEN = MATERIAL;
-						dloffset = FT_APP_Screen_BasicScreen(phost, SCREEN);
+						dloffset = FT_APP_Screen_BasicScreen(SCREEN);
 					break;
 					case MATERIAL:
 					break;
@@ -260,7 +253,7 @@ int main(void)
 					break;
 					case SETTINGS:
 						SCREEN = CALIBRATION;
-						dloffset = FT_APP_Screen_BasicScreen(phost, SCREEN);
+						dloffset = FT_APP_Screen_BasicScreen(SCREEN);
 					break;
 					case MATERIAL:
 					break;
@@ -281,7 +274,7 @@ int main(void)
 		  }
 
 	  } else {
-		  FT_APP_Screen_Content(phost, SCREEN, STATE, tag, dloffset, F, A, A0, H, F1, A1, E, HB, ST, SB, init_finished);
+		  FT_APP_Screen_Content(SCREEN, STATE, tag, dloffset, F, A, A0, H, F1, A1, E, HB, ST, SB, init_finished);
 	  }
 
 	  USB_Send_DataPair(STATE, F, A);
