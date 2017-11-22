@@ -57,6 +57,7 @@
 #include "GUI.h"
 #include "FT_Platform.h"
 #include "SampleApp.h"
+#include "FT80x.h"
 /* USER CODE BEGIN Includes */
 
 /* USER CODE END Includes */
@@ -86,13 +87,12 @@ static void MX_TIM2_Init(void);
 /* USER CODE END PFP */
 
 /* USER CODE BEGIN 0 */
+//#define FILTERING
 #define SPS 5000
 #define Trc 0.001f
 #define K (SPS*Trc)
-
 static uint32_t Dacc = 0;
 static uint32_t Dout = 0;
-
 
 uint16_t init_finished = 0;
 
@@ -110,7 +110,7 @@ double A1 = 0; //измерение
 double H = 0; //снятие
 
 
-#define DMA_BUFFER_SIZE 512
+#define DMA_BUFFER_SIZE 1024
 uint16_t DMA_BUFFER[DMA_BUFFER_SIZE];
 
 
@@ -153,17 +153,20 @@ int main(void)
 
   	Ft_Gpu_HalInit_t halinit;
 	Ft_Gpu_Hal_Context_t host,*phost;
-	halinit.TotalChannelNum = 1;
-	Ft_Gpu_Hal_Init(&halinit);
-	host.hal_config.channel_no = 0;
-	host.hal_config.spi_clockrate_khz = 2000; //in KHz
-	Ft_Gpu_Hal_Open(&host);
+//	halinit.TotalChannelNum = 1;
+//	Ft_Gpu_Hal_Init(&halinit);
+//	host.hal_config.channel_no = 0;
+//	host.hal_config.spi_clockrate_khz = 2000; //in KHz
+//	Ft_Gpu_Hal_Open(&host);
 	phost = &host;
 
-	Ft_Gpu_Hal_Sleep(50);
-	SAMAPP_BootupConfig(phost);
-	dloffset = API_Screen_BasicScreen(phost, SCREEN);
-	Ft_Gpu_Hal_Sleep(50);
+//	HAL_Delay(50);
+	__SAMAPP_BootupConfig(phost);
+	//SAMAPP_API_Screen(phost, "TestTest");
+	dloffset = 0;
+	dloffset = __API_Screen_BasicScreen(phost, SCREEN);
+
+	HAL_Delay(50);
 
 	uint16_t flag = 1;
 	init_finished = 1;
@@ -178,143 +181,124 @@ int main(void)
   while (1)
   {
   /* USER CODE END WHILE */
-	  HAL_GPIO_WritePin(GPIOB, GPIO_PIN_10, GPIO_PIN_SET);
-	  HAL_Delay(100);
-	  HAL_GPIO_WritePin(GPIOB, GPIO_PIN_10, GPIO_PIN_RESET);
-	  HAL_Delay(100);
+	  HAL_GPIO_TogglePin(GPIOB, GPIO_PIN_10);
 
+	  //SAMAPP_API_Screen(phost, "TestTest");
+	  //API_Screen_Test();//черный фон и белая точка
+	  //SAMAPP_API_Test_Screen_Content(phost, SCREEN, STATE, 0, dloffset);
 
-//	  int tag = Ft_Gpu_Hal_Rd8(phost,REG_TOUCH_TAG);
-//
-//	  if (tag != 0){
-//
-//		  SAMAPP_API_Screen_Content(phost, SCREEN, STATE, tag, dloffset, F, A, A0, H, F1, A1, E, HB, ST, SB, init_finished);
-//		  Ft_Gpu_Hal_Sleep(5);
-//
-//		  switch (tag){
-//			case 1:
-//				switch (SCREEN){
-//					case MAIN:
-//						SCREEN = SETTINGS;
-//						dloffset = API_Screen_BasicScreen(phost, SCREEN);
-//					break;
-//					case SETTINGS:
-//						SCREEN = MAIN;
-//						dloffset = API_Screen_BasicScreen(phost, SCREEN);
-//					break;
-//					case MATERIAL:
-//						SCREEN = SETTINGS;
-//						dloffset = API_Screen_BasicScreen(phost, SCREEN);
-//					break;
-//					case CALIBRATION:
-//						SCREEN = SETTINGS;
-//						dloffset = API_Screen_BasicScreen(phost, SCREEN);
-//					break;
-//				}
-//			break;
-//			case 2:
-//				switch (STATE)
-//			  {
-//				case IDLE:
-//				  STATE = TOUCH;
-//				break;
-//				case TOUCH:
-//				  A0 = A;
-//				  STATE = MEASURE;
-//				break;
-//				case MEASURE:
-//				  F1 = F;//измерение
-//				  A1 = A;
-//				  STATE = REMOVAL;
-//				break;
-//				case REMOVAL:
-//				  H = A;
-//
-//				  T14math(&E, &ST, &SB, &HB, F1, A0, A1, H);
-//				  STATE = RESULTS;
-//				break;
-//				case RESULTS:
-//					//clear
-//				  STATE = TOUCH;
-//				break;
-//			  }
-//
-//				SAMAPP_API_Screen_Content(phost, SCREEN, STATE, tag, dloffset, F, A, A0, H, F1, A1, E, HB, ST, SB, init_finished);
-//				Ft_Gpu_Hal_Sleep(5);
-//				flag = 1;
-//			break;
-//			case 3:
-//				STATE = IDLE;
-//				SAMAPP_API_Screen_Content(phost, SCREEN, STATE, tag, dloffset, F, A, A0, H, F1, A1, E, HB, ST, SB, init_finished);
-//				flag = 0;
-//			break;
-//			case 4:
-//				switch (SCREEN){
-//					case MAIN:
-//					break;
-//					case SETTINGS:
-//						SCREEN = MATERIAL;
-//						dloffset = API_Screen_BasicScreen(phost, SCREEN);
-//					break;
-//					case MATERIAL:
-//					break;
-//					case CALIBRATION:
-//					break;
-//				}
-//			break;
-//			case 5:
-//				switch (SCREEN){
-//					case MAIN:
-//					break;
-//					case SETTINGS:
-//						SCREEN = CALIBRATION;
-//						dloffset = API_Screen_BasicScreen(phost, SCREEN);
-//					break;
-//					case MATERIAL:
-//					break;
-//					case CALIBRATION:
-//					break;
-//				}
-//			break;
-//			case 201:
-//			case 202:
-//			case 203:
-//				//** FLASHStatus = FLASH_Write_DataWord(0, tag);
-//				//ft_uint32_t storedValue = FLASH_Read_DataWord(0);
-//			break;
-//		  }
-//
-//		  while (tag != 0){
-//			  tag = Ft_Gpu_Hal_Rd8(phost,REG_TOUCH_TAG);
-//		  }
-//
-//	  } else {
-//		  SAMAPP_API_Screen_Content(phost, SCREEN, STATE, tag, dloffset, F, A, A0, H, F1, A1, E, HB, ST, SB, init_finished);
-//		  tag = Ft_Gpu_Hal_Rd8(phost,REG_TOUCH_TAG);
-//		  Ft_Gpu_Hal_Sleep(5);
-//	  }
+	  int tag = ft800memRead8(REG_TOUCH_TAG);
 
+	  if (tag != 0){
 
+	  	  __SAMAPP_API_Screen_Content(phost, SCREEN, STATE, tag, dloffset, F, A, A0, H, F1, A1, E, HB, ST, SB, init_finished);
 
-	USB_Send_DataPair(STATE, F, A);
+		  switch (tag){
+			case 1:
+				switch (SCREEN){
+					case MAIN:
+						SCREEN = SETTINGS;
+						dloffset = __API_Screen_BasicScreen(phost, SCREEN);
+					break;
+					case SETTINGS:
+						SCREEN = MAIN;
+						dloffset = __API_Screen_BasicScreen(phost, SCREEN);
+					break;
+					case MATERIAL:
+						SCREEN = SETTINGS;
+						dloffset = __API_Screen_BasicScreen(phost, SCREEN);
+					break;
+					case CALIBRATION:
+						SCREEN = SETTINGS;
+						dloffset = __API_Screen_BasicScreen(phost, SCREEN);
+					break;
+				}
+			break;
+			case 2:
+				switch (STATE)
+				{
+					case IDLE:
+					  STATE = TOUCH;
+					break;
+					case TOUCH:
+					  A0 = A;
+					  STATE = MEASURE;
+					break;
+					case MEASURE:
+					  F1 = F;//измерение
+					  A1 = A;
+					  STATE = REMOVAL;
+					break;
+					case REMOVAL:
+					  H = A;
 
-	uint8_t testDataToSend[8];
-	for (uint8_t i = 0; i < 8; i++)
-	{
-		testDataToSend[i] = i;
-	}
-	//CDC_Transmit_FS(testDataToSend, 8);
+					  T14math(&E, &ST, &SB, &HB, F1, A0, A1, H);
+					  STATE = RESULTS;
+					break;
+					case RESULTS:
+						//clear
+					  STATE = TOUCH;
+					break;
+				}
 
+				__SAMAPP_API_Screen_Content(phost, SCREEN, STATE, tag, dloffset, F, A, A0, H, F1, A1, E, HB, ST, SB, init_finished);
+				flag = 1;
+			break;
+			case 3:
+				STATE = IDLE;
+				__SAMAPP_API_Screen_Content(phost, SCREEN, STATE, tag, dloffset, F, A, A0, H, F1, A1, E, HB, ST, SB, init_finished);
+				flag = 0;
+			break;
+			case 4:
+				switch (SCREEN){
+					case MAIN:
+					break;
+					case SETTINGS:
+						SCREEN = MATERIAL;
+						dloffset = __API_Screen_BasicScreen(phost, SCREEN);
+					break;
+					case MATERIAL:
+					break;
+					case CALIBRATION:
+					break;
+				}
+			break;
+			case 5:
+				switch (SCREEN){
+					case MAIN:
+					break;
+					case SETTINGS:
+						SCREEN = CALIBRATION;
+						dloffset = __API_Screen_BasicScreen(phost, SCREEN);
+					break;
+					case MATERIAL:
+					break;
+					case CALIBRATION:
+					break;
+				}
+			break;
+			case 201:
+			case 202:
+			case 203:
+				//** FLASHStatus = FLASH_Write_DataWord(0, tag);
+				//ft_uint32_t storedValue = FLASH_Read_DataWord(0);
+			break;
+		  }
+
+		  while (tag != 0){
+			  tag = ft800memRead8(REG_TOUCH_TAG);
+		  }
+
+	  } else {
+		  __SAMAPP_API_Screen_Content(phost, SCREEN, STATE, tag, dloffset, F, A, A0, H, F1, A1, E, HB, ST, SB, init_finished);
+	  }
+
+	  USB_Send_DataPair(STATE, F, A);
 
 	  if (flag != 0)
 	  	  init_finished++;
 
 	}
-  /* USER CODE BEGIN 3 */
-
-
-  /* USER CODE END 3 */
-
 }
 
 
@@ -335,21 +319,17 @@ void TIM2_IRQHandler(void)
 	}
 	F = mean / DMA_BUFFER_SIZE;
 
-	//Dacc = Dacc + F - Dout;
-	//Dout = Dacc/(uint16_t)K;
-	//F = Dout;
-
+	#ifdef FILTERING
+		Dacc = Dacc + F - Dout;
+		Dout = Dacc/(uint16_t)K;
+		F = Dout;
+	#endif
 
 	//F = F1K * sum * (ADC_VOLTS / ADC_MAX_BITS) + F1B;
 	//F = sum * (ADC_VOLTS / ADC_MAX_BITS);
 	//F = sum;
 
-
 	F = F1K * F + F1B;
-
-
-
-
 	A = A1K*ReadSSI()+A1B;
 
 	/* USER CODE END TIM3_IRQn 1 */
@@ -471,17 +451,10 @@ static void MX_SPI1_Init(void)
   hspi1.Init.FirstBit = SPI_FIRSTBIT_MSB;
   hspi1.Init.TIMode = SPI_TIMODE_DISABLE;
   hspi1.Init.CRCCalculation = SPI_CRCCALCULATION_DISABLE;
-  hspi1.Init.CRCPolynomial = 7;
-  hspi1.Init.CRCLength = SPI_CRC_LENGTH_DATASIZE;
-  hspi1.Init.NSSPMode = SPI_NSS_PULSE_DISABLE;
-	if(hspi1.Init.DataSize > SPI_DATASIZE_8BIT)
-	{
-		SPI_RXFIFO_THRESHOLD_HF;
-	}
-	else
-	{
-		SPI_RXFIFO_THRESHOLD_QF;
-	}
+  //hspi1.Init.CRCPolynomial = 7;
+  //hspi1.Init.CRCLength = SPI_CRC_LENGTH_DATASIZE;
+  //hspi1.Init.NSSPMode = SPI_NSS_PULSE_DISABLE;
+
   if (HAL_SPI_Init(&hspi1) != HAL_OK)
   {
     _Error_Handler(__FILE__, __LINE__);

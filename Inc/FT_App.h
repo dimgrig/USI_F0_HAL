@@ -6,9 +6,11 @@
  */
 #include <stdio.h>
 #include "FT_Platform.h"
-#include "arial.TTF_18_L1.rawh"
+
 #include "GUI.h"
 //#include "t14-flash.h"
+#include "FT80x.h"
+#include "arial.TTF_18_L1.rawh"
 
 #ifndef FT_APP_H_
 #define FT_APP_H_
@@ -18,6 +20,9 @@ ft_void_t Ft_App_WrDlCmd_Buffer(Ft_Gpu_Hal_Context_t *phost,ft_uint32_t cmd);
 ft_void_t Ft_App_WrCoStr_Buffer(Ft_Gpu_Hal_Context_t *phost,const ft_char8_t *s);
 ft_void_t Ft_App_Flush_DL_Buffer(Ft_Gpu_Hal_Context_t *phost);
 ft_void_t Ft_App_Flush_Co_Buffer(Ft_Gpu_Hal_Context_t *phost);
+
+
+ft_uint16_t __API_Screen_BasicScreen(Ft_Gpu_Hal_Context_t *phost, Screen_TypeDef SCREEN);
 
 ft_uint32_t white = COLOR_RGB(0xbb,0xbb,0xbb);
 ft_uint32_t gray = COLOR_RGB(0x77,0x77,0x77);

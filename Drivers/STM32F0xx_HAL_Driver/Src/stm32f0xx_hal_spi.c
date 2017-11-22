@@ -331,11 +331,13 @@ HAL_StatusTypeDef HAL_SPI_Init(SPI_HandleTypeDef *hspi)
   /* Align by default the rs fifo threshold on the data size */
   if (hspi->Init.DataSize > SPI_DATASIZE_8BIT)
   {
-    frxth = SPI_RXFIFO_THRESHOLD_HF;
+	  frxth = SPI_RXFIFO_THRESHOLD_QF;
+    //frxth = SPI_RXFIFO_THRESHOLD_HF;
   }
   else
   {
-    frxth = SPI_RXFIFO_THRESHOLD_QF;
+	  frxth = SPI_RXFIFO_THRESHOLD_HF;
+    //frxth = SPI_RXFIFO_THRESHOLD_QF;
   }
 
   /* CRC calculation is valid only for 16Bit and 8 Bit */
@@ -3896,6 +3898,129 @@ static void SPI_AbortTx_ISR(SPI_HandleTypeDef *hspi)
 /**
   * @}
   */
+
+
+uint8_t __HAL_SPI_TransmitReceive(SPI_HandleTypeDef *hspi, uint8_t TxData)
+{
+  uint8_t RxData = 0;
+
+  uint32_t tickstart = 0U;
+  /* Variable used to alternate Rx and Tx during transfer */
+  uint32_t txallowed = 1U;
+  HAL_StatusTypeDef errorcode = HAL_OK;
+
+
+
+  /* Process Locked */
+  __HAL_LOCK(hspi);
+
+  /* Init tickstart for timeout management*/
+  tickstart = HAL_GetTick();
+
+
+  /* Don't overwrite in case of HAL_SPI_STATE_BUSY_RX */
+  if (hspi->State != HAL_SPI_STATE_BUSY_RX)
+  {
+    hspi->State = HAL_SPI_STATE_BUSY_TX_RX;
+  }
+
+  /* Set the transaction information */
+  hspi->ErrorCode   = HAL_SPI_ERROR_NONE;
+  hspi->pRxBuffPtr  = (uint8_t *)RxData;
+  hspi->RxXferCount = 1;
+  hspi->RxXferSize  = 1;
+  hspi->pTxBuffPtr  = (uint8_t *)TxData;
+  hspi->TxXferCount = 1;
+  hspi->TxXferSize  = 1;
+
+  /*Init field not used in handle to zero */
+  hspi->RxISR       = NULL;
+  hspi->TxISR       = NULL;
+
+
+  SET_BIT(hspi->Instance->CR2, SPI_RXFIFO_THRESHOLD);
+
+
+  /* Check if the SPI is already enabled */
+  if ((hspi->Instance->CR1 & SPI_CR1_SPE) != SPI_CR1_SPE)
+  {
+    /* Enable SPI peripheral */
+    __HAL_SPI_ENABLE(hspi);
+  }
+
+
+	hspi->Instance->DR = TxData;
+	hspi->TxXferCount--;
+
+
+	RxData = hspi->Instance->DR;
+    hspi->RxXferCount--;
+
+
+
+  hspi->State = HAL_SPI_STATE_READY;
+  __HAL_UNLOCK(hspi);
+  return RxData;
+}
+
+uint8_t __HAL_SPI_Transmit(SPI_HandleTypeDef *hspi, uint8_t TxData)
+{
+  uint8_t RxData = 0;
+
+  uint32_t tickstart = 0U;
+  /* Variable used to alternate Rx and Tx during transfer */
+  uint32_t txallowed = 1U;
+  HAL_StatusTypeDef errorcode = HAL_OK;
+
+
+
+  /* Process Locked */
+  __HAL_LOCK(hspi);
+
+  /* Init tickstart for timeout management*/
+  tickstart = HAL_GetTick();
+
+
+  /* Don't overwrite in case of HAL_SPI_STATE_BUSY_RX */
+  if (hspi->State != HAL_SPI_STATE_BUSY_RX)
+  {
+    hspi->State = HAL_SPI_STATE_BUSY_TX_RX;
+  }
+
+  /* Set the transaction information */
+  hspi->ErrorCode   = HAL_SPI_ERROR_NONE;
+  hspi->pRxBuffPtr  = (uint8_t *)RxData;
+  hspi->RxXferCount = 0;
+  hspi->RxXferSize  = 0;
+  hspi->pTxBuffPtr  = (uint8_t *)TxData;
+  hspi->TxXferCount = 1;
+  hspi->TxXferSize  = 1;
+
+  /*Init field not used in handle to zero */
+  hspi->RxISR       = NULL;
+  hspi->TxISR       = NULL;
+
+
+  SET_BIT(hspi->Instance->CR2, SPI_RXFIFO_THRESHOLD);
+
+
+  /* Check if the SPI is already enabled */
+  if ((hspi->Instance->CR1 & SPI_CR1_SPE) != SPI_CR1_SPE)
+  {
+    /* Enable SPI peripheral */
+    __HAL_SPI_ENABLE(hspi);
+  }
+
+
+	hspi->Instance->DR = TxData;
+	hspi->TxXferCount--;
+
+
+  hspi->State = HAL_SPI_STATE_READY;
+  __HAL_UNLOCK(hspi);
+  return RxData;
+}
+
 
 #endif /* HAL_SPI_MODULE_ENABLED */
 

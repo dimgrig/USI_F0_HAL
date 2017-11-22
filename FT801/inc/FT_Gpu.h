@@ -30,6 +30,8 @@ Revision History:
  
 */
 
+#include "FT_DataTypes.h"
+
 #ifndef _FT_GPU_H_
 #define _FT_GPU_H_
 

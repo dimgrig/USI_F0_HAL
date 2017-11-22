@@ -9,8 +9,6 @@
 #include "GUI.h"
 
 
-
-
 void USB_Send_Packet(uint8_t *packet, uint16_t length)
 {
 	USB_Send_Data(0x02);
@@ -51,7 +49,7 @@ void USB_Send_DataPair(State_TypeDef STATE, double F, double A){
 	char value_c[value_c_length];
 
 	uint32_t F_dec = (uint32_t)F;
-	uint32_t F_fr = (uint32_t)( ( F - floor(F) ) * pow(10, 1) );
+	uint32_t F_fr = (uint32_t)( ( F - (uint32_t)(F) ) * 10 );
 
 	if (F_dec == 0){
 		arr[length] = hextoascii(0);
@@ -116,7 +114,7 @@ void USB_Send_DataPair(State_TypeDef STATE, double F, double A){
 
 
 	uint32_t A_dec = (uint32_t)A;
-	uint32_t A_fr = (uint32_t)( ( A - floor(A) ) * pow(10, 3) );
+	uint32_t A_fr = (uint32_t)( ( A - (uint32_t)(A) ) * 1000 );
 
 	if (A_dec == 0){
 		arr[length] = hextoascii(0);
@@ -251,3 +249,10 @@ void USB_Send_Data(uint8_t data){
 //        }
 //    USB_Data_Received_Flag = 0;
 //    }  /* if */
+
+//	uint8_t testDataToSend[8];
+//	for (uint8_t i = 0; i < 8; i++)
+//	{
+//		testDataToSend[i] = i;
+//	}
+	//CDC_Transmit_FS(testDataToSend, 8);

@@ -56,20 +56,102 @@ Revision History:
 //#include <time.h>
 //#include <io.h>
 
-#include "ftd2xx.h"
+//#include "ftd2xx.h"
 //#include "LibMPSSE_spi.h"
 
 #include "FT_DataTypes.h"
-#include "FT_Gpu_Hal.h"
+//#include "FT_Gpu_Hal.h"
 #include "FT_Gpu.h"
-#include "FT_CoPro_Cmds.h"
+//#include "FT_CoPro_Cmds.h"
 
 #include "stm32f0xx_hal.h"
+#include "stm32f0xx_hal_spi.h"
 
 //#define BUFFER_OPTIMIZATION
 //#define MSVC_PLATFORM_SPI
 
-SPI_HandleTypeDef hspi1;
+
+typedef enum {
+	FT_GPU_I2C_MODE = 0,
+	FT_GPU_SPI_MODE,
+
+	FT_GPU_MODE_COUNT,
+	FT_GPU_MODE_UNKNOWN = FT_GPU_MODE_COUNT
+}FT_GPU_HAL_MODE_E;
+
+typedef enum {
+	FT_GPU_HAL_OPENED,
+	FT_GPU_HAL_READING,
+	FT_GPU_HAL_WRITING,
+	FT_GPU_HAL_CLOSED,
+
+	FT_GPU_HAL_STATUS_COUNT,
+	FT_GPU_HAL_STATUS_ERROR = FT_GPU_HAL_STATUS_COUNT
+}FT_GPU_HAL_STATUS_E;
+
+typedef struct {
+	union {
+		ft_uint8_t spi_cs_pin_no;
+		ft_uint8_t i2c_addr;
+	};
+	union {
+		ft_uint16_t spi_clockrate_khz;  //In KHz
+		ft_uint16_t i2c_clockrate_khz;  //In KHz
+	};
+	ft_uint8_t channel_no;
+}Ft_Gpu_Hal_Config_t;
+
+typedef struct {
+	ft_uint8_t reserved;
+}Ft_Gpu_App_Context_t;
+
+typedef struct {
+	/* Total number channels for libmpsse */
+	ft_uint32_t TotalChannelNum;
+}Ft_Gpu_HalInit_t;
+
+typedef enum {
+	FT_GPU_READ = 0,
+	FT_GPU_WRITE,
+}FT_GPU_TRANSFERDIR_T;
+
+
+typedef struct {
+	ft_uint32_t length; //IN and OUT
+	ft_uint32_t address;
+	ft_uint8_t  *buffer;
+}Ft_Gpu_App_Transfer_t;
+
+typedef struct {
+	Ft_Gpu_App_Context_t        app_header;
+	Ft_Gpu_Hal_Config_t         hal_config;
+
+        ft_uint16_t ft_cmd_fifo_wp; //coprocessor fifo write pointer
+        ft_uint16_t ft_dl_buff_wp;  //display command memory write pointer
+
+	FT_GPU_HAL_STATUS_E        status;        //OUT
+	ft_void_t*                 hal_handle;        //IN/OUT
+}Ft_Gpu_Hal_Context_t;
+
+/*APIs for Host Commands*/
+typedef enum {
+	FT_GPU_INTERNAL_OSC = 0x48, //default
+	FT_GPU_EXTERNAL_OSC = 0x44,
+}FT_GPU_PLL_SOURCE_T;
+typedef enum {
+	FT_GPU_PLL_48M = 0x62,  //default
+	FT_GPU_PLL_36M = 0x61,
+	FT_GPU_PLL_24M = 0x64,
+}FT_GPU_PLL_FREQ_T;
+
+typedef enum {
+	FT_GPU_ACTIVE_M =  0x00,
+	FT_GPU_STANDBY_M = 0x41,//default
+	FT_GPU_SLEEP_M =   0x42,
+	FT_GPU_POWERDOWN_M = 0x50,
+}FT_GPU_POWER_MODE_T;
+
+#define FT_GPU_CORE_RESET  (0x68)
 
 #endif /*_FT_PLATFORM_H_*/
 /* Nothing beyond this*/
