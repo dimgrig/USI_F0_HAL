@@ -58,6 +58,7 @@
 #include "SampleApp.h"
 #include "FT80x.h"
 
+#include "t14-flash.h"
 /* USER CODE BEGIN Includes */
 
 /* USER CODE END Includes */
@@ -119,6 +120,14 @@ double H = 0; //снятие
 uint16_t DMA_BUFFER[DMA_BUFFER_SIZE];
 
 
+
+
+
+
+
+
+
+
 /* USER CODE END 0 */
 
 void __attribute__ ((weak)) _init(void)  {}
@@ -155,6 +164,16 @@ int main(void)
   MX_TIM2_Init();
 
   /* USER CODE BEGIN 2 */
+
+  FLASH_INIT();
+  uint32_t FL_Address = 0x08010000;
+  FLASH_WRITE(FL_Address, 0x12345678);
+  uint32_t FL_Data = 0;
+  FLASH_READ(FL_Address, &FL_Data);
+  dloffset = FL_Data;
+
+
+
 
   FT_APP_BootupConfig();
   dloffset = FT_APP_Screen_BasicScreen(SCREEN);
