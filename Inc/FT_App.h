@@ -12,6 +12,8 @@
 #include "FT80x.h"
 #include "arial.TTF_18_L1.rawh"
 
+#include "userdef.h"
+
 #ifndef FT_APP_H_
 #define FT_APP_H_
 

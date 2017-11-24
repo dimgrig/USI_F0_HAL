@@ -11,6 +11,9 @@
 unsigned int incCMDOffset(unsigned int currentOffset, unsigned char commandSize);
 extern FT_PROGMEM ft_prog_uchar8_t SAMApp_Metric_L1[];
 extern FT_PROGMEM ft_prog_uchar8_t SAMApp_L1[];
+
+//extern FT_PROGMEM ft_prog_uchar8_t SAMApp_L1[];
+
 ft_uint32_t SAMApp_Metric_L1_SIZE = 148;
 ft_uint32_t SAMApp_L1_SIZE = 6489;
 ft_uint32_t FONT_POS = 1000;
@@ -389,6 +392,38 @@ ft_void_t FT_APP_Screen_Content(Screen_TypeDef SCREEN, State_TypeDef STATE,
 			cmd_fgcolor((tag==1)?button_color_hover:button_color);
 			cmd_button(5, 190, 100, 40, R_FONT, 0, "\x5f");
 			cmd(TAG_MASK(0));
+
+				uint8_t length=0;
+				uint8_t arr[32];
+
+				cmd(TAG_MASK(1));
+				cmd(TAG(201));          // assign the tag value
+				cmd_fgcolor((tag==201)?button_color_hover:button_color);
+
+				float_to_char_array(F1K, &arr[0], &length, 1000);
+				uint8_t arr1[length+1];
+				for (int i = 0; i < length; i++) {
+					arr1[i] = arr[i];
+				}
+				arr1[length] = '\0';
+				cmd_button(10, 10, 100, 30, 18, 0, arr1);
+				cmd(TAG_MASK(0));
+
+
+				length=0;
+
+				cmd(TAG_MASK(1));
+				cmd(TAG(202));          // assign the tag value
+				cmd_fgcolor((tag==202)?button_color_hover:button_color);
+
+				float_to_char_array(F1B, &arr[0], &length, 1000);
+				uint8_t arr2[length+1];
+				for (int i = 0; i < length; i++) {
+					arr2[i] = arr[i];
+				}
+				arr2[length] = '\0';
+				cmd_button(10, 50, 100, 30, 18, 0, arr2);
+				cmd(TAG_MASK(0));
 
 			//***Keyboard(phost, tag);
 		break;

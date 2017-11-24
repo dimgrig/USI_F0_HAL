@@ -180,7 +180,7 @@ extern void    FLASH_PageErase(uint32_t PageAddress);
   * 
   * @retval HAL_StatusTypeDef HAL Status
   */
-HAL_StatusTypeDef HAL_FLASH_Program(uint32_t TypeProgram, uint32_t Address, uint64_t Data)
+HAL_StatusTypeDef HAL_FLASH_Program(uint32_t TypeProgram, uint32_t Address, uint32_t Data)
 {
   HAL_StatusTypeDef status = HAL_ERROR;
   uint8_t index = 0U;
@@ -198,37 +198,64 @@ HAL_StatusTypeDef HAL_FLASH_Program(uint32_t TypeProgram, uint32_t Address, uint
   
   if(status == HAL_OK)
   {
-    if(TypeProgram == FLASH_TYPEPROGRAM_HALFWORD)
-    {
-      /* Program halfword (16-bit) at a specified address. */
-      nbiterations = 1U;
-    }
-    else if(TypeProgram == FLASH_TYPEPROGRAM_WORD)
-    {
-      /* Program word (32-bit = 2*16-bit) at a specified address. */
-      nbiterations = 2U;
-    }
-    else
-    {
-      /* Program double word (64-bit = 4*16-bit) at a specified address. */
-      nbiterations = 4U;
-    }
+//    if(TypeProgram == FLASH_TYPEPROGRAM_HALFWORD)
+//    {
+//      /* Program halfword (16-bit) at a specified address. */
+//      nbiterations = 1U;
+//    }
+//    else if(TypeProgram == FLASH_TYPEPROGRAM_WORD)
+//    {
+//      /* Program word (32-bit = 2*16-bit) at a specified address. */
+//      nbiterations = 2U;
+//    }
+//    else
+//    {
+//      /* Program double word (64-bit = 4*16-bit) at a specified address. */
+//      nbiterations = 4U;
+//    }
 
-    for (index = 0U; index < nbiterations; index++)
-    {
-      FLASH_Program_HalfWord((Address + (2U*index)), (uint16_t)(Data >> (16U*index)));
+//    for (index = 0U; index < nbiterations; index++)
+//    {
+//      FLASH_Program_HalfWord((Address + (2U*index)), (uint16_t)(Data >> (16U*index)));
+//
+//        /* Wait for last operation to be completed */
+//        status = FLASH_WaitForLastOperation(FLASH_TIMEOUT_VALUE);
+//
+//        /* If the program operation is completed, disable the PG Bit */
+//        CLEAR_BIT(FLASH->CR, FLASH_CR_PG);
+//      /* In case of error, stop programation procedure */
+//      if (status != HAL_OK)
+//      {
+//        break;
+//      }
+//    }
 
-        /* Wait for last operation to be completed */
-        status = FLASH_WaitForLastOperation(FLASH_TIMEOUT_VALUE);
-    
-        /* If the program operation is completed, disable the PG Bit */
-        CLEAR_BIT(FLASH->CR, FLASH_CR_PG);
-      /* In case of error, stop programation procedure */
-      if (status != HAL_OK)
-      {
-        break;
-      }
-    }
+    FLASH_Program_HalfWord(Address, (uint16_t)(Data));
+
+	/* Wait for last operation to be completed */
+	status = FLASH_WaitForLastOperation(FLASH_TIMEOUT_VALUE);
+
+	/* If the program operation is completed, disable the PG Bit */
+	CLEAR_BIT(FLASH->CR, FLASH_CR_PG);
+	/* In case of error, stop programation procedure */
+	if (status != HAL_OK)
+	{
+		;
+	}
+	else {
+		FLASH_Program_HalfWord(Address+2, (uint16_t)(Data>>16));
+
+		/* Wait for last operation to be completed */
+		status = FLASH_WaitForLastOperation(FLASH_TIMEOUT_VALUE);
+
+		/* If the program operation is completed, disable the PG Bit */
+		CLEAR_BIT(FLASH->CR, FLASH_CR_PG);
+		/* In case of error, stop programation procedure */
+		if (status != HAL_OK)
+		{
+			;
+		}
+	}
   }
 
   /* Process Unlocked */
@@ -655,13 +682,15 @@ HAL_StatusTypeDef FLASH_WaitForLastOperation(uint32_t Timeout)
     __HAL_FLASH_CLEAR_FLAG(FLASH_FLAG_EOP);
   }
   
-  if(__HAL_FLASH_GET_FLAG(FLASH_FLAG_WRPERR)  || 
-     __HAL_FLASH_GET_FLAG(FLASH_FLAG_PGERR))
-  {
-    /*Save the error code*/
-    FLASH_SetErrorCode();
-    return HAL_ERROR;
-  }
+//  uint32_t a = __HAL_FLASH_GET_FLAG(FLASH_FLAG_WRPERR);
+//  uint32_t b = __HAL_FLASH_GET_FLAG(FLASH_FLAG_PGERR);
+//
+//  if(a || b)
+//  {
+//    /*Save the error code*/
+//    FLASH_SetErrorCode();
+//    return HAL_ERROR;
+//  }
 
   /* There is no error flag set */
   return HAL_OK;
