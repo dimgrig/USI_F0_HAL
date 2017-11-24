@@ -5,6 +5,7 @@
  *      Author: Dima
  */
 #include "stm32f0xx.h"
+#include <stdlib.h>
 
 #ifndef INC_USERDEF_H_
 #define INC_USERDEF_H_
@@ -21,6 +22,7 @@ float F1B;
 
 uint8_t hextoascii(uint8_t hex);
 uint8_t asciitohex(uint8_t ascii);
-void float_to_char_array(float value, uint8_t *arr, uint8_t* length, uint32_t digits);
+void float_to_char_array(float value, uint8_t *arr, uint8_t* length, uint8_t digits);
+void char_array_to_float(float *value, uint8_t *arr, uint8_t length);
 
 #endif /* INC_USERDEF_H_ */

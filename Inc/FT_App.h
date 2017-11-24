@@ -26,12 +26,12 @@ ft_uint32_t button_color_selected = COLOR_RGB(0x00,0xff,0x55);
 ft_uint16_t FT_Width = 320;
 ft_uint16_t FT_Height = 240;
 
-//ft_uint8_t DispText[20];
-//ft_uint8_t CurrChar = '|';
-//ft_uint8_t CurrTag = 0;
-//ft_uint8_t PrevTag = 0;
-////ft_uint8_t Pendown = 1;
-//ft_uint8_t CurrTextIdx = 0;
+ft_uint8_t DispText[32];
+ft_uint8_t CurrChar = '|';
+ft_uint8_t CurrTag = 0;
+ft_uint8_t PrevTag = 0;
+//ft_uint8_t Pendown = 1;
+ft_uint8_t CurrTextIdx = 0;
 
 
 ft_void_t FT_APP_BootupConfig();
@@ -46,5 +46,6 @@ ft_uint16_t FT_APP_Screen_BasicScreen(Screen_TypeDef SCREEN);
 void FT_APP_Screen_MainScreen();
 ft_void_t FT_APP_Screen(ft_char8_t *str);
 void FT_APP_Screen_Test();
+ft_void_t Keyboard(ft_uint16_t tag, uint8_t *arr, uint8_t* length);
 
 #endif /* FT_APP_H_ */

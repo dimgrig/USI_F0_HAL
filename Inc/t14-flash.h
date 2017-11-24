@@ -20,11 +20,11 @@ typedef enum {FAILED = 0, PASSED = !FAILED} TestStatus;
 
 /* Uncomment this line to Disable Write Protection */
 #define WRITE_PROTECTION_DISABLE
-#define ADDR_FLASH_PAGE_32  0x08010000 /* Start @ of user Flash area */
-#define ADDR_FLASH_PAGE_33  0x08010800 /* End @ of user Flash area */
-#define FLASH_USER_START_ADDR       ADDR_FLASH_PAGE_32   /* Start @ of user Flash area */
-#define FLASH_USER_END_ADDR         ADDR_FLASH_PAGE_33   /* End @ of user Flash area */
-#define FLASH_PAGE_TO_BE_PROTECTED (OB_WRP_PAGES24TO25 | OB_WRP_PAGES26TO27 | OB_WRP_PAGES32TO33 )
+#define ADDR_FLASH_PAGE_56  0x0801C000 /* Start @ of user Flash area */
+#define ADDR_FLASH_PAGE_58  0x0801D800 /* End @ of user Flash area */
+#define FLASH_USER_START_ADDR       ADDR_FLASH_PAGE_56   /* Start @ of user Flash area */
+#define FLASH_USER_END_ADDR         ADDR_FLASH_PAGE_58   /* End @ of user Flash area */
+#define FLASH_PAGE_TO_BE_PROTECTED (OB_WRP_PAGES24TO25 | OB_WRP_PAGES26TO27 | OB_WRP_PAGES56TO57 | OB_WRP_PAGES58TO59 )
 
 #define DATA_32                     ((uint32_t)0x12345678)
 

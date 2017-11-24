@@ -7,12 +7,17 @@
 
 #include "userdef.h"
 
-void float_to_char_array(float value, uint8_t *arr, uint8_t* length, uint32_t digits)
+void float_to_char_array(float value, uint8_t *arr, uint8_t* length, uint8_t digits)
 {
 	uint8_t value_c_length = 10;
 	uint8_t value_c[value_c_length];
+
+	uint32_t mult = 1;
+	for (int i = 0; i < digits; i++){
+		mult *= 10;
+	}
 	uint32_t value_dec = (uint32_t)value;
-	uint32_t value_fr = (uint32_t) (( value - (uint32_t)(value) ) * digits );
+	uint32_t value_fr = (uint32_t) (( value - (uint32_t)(value) ) * mult );
 	//uint8_t length = 0;
 	uint8_t l = 0;
 	//uint8_t arr[32];
@@ -57,6 +62,67 @@ void float_to_char_array(float value, uint8_t *arr, uint8_t* length, uint32_t di
 		}
 	}
 
+}
+
+void char_array_to_float(float *value, uint8_t *arr, uint8_t length)
+{
+	uint8_t len1 = 0;
+	uint8_t len2 = 0;
+	uint8_t arr_d[32];
+	uint8_t arr_f[32];
+
+	uint8_t p = 0;
+	uint32_t value_dec = 0;
+	uint32_t value_fr = 0;
+
+//	float result = 0;
+//	for (int i = 0; i < length; i++)
+//	{
+//		if (p == 0){
+//			if (*(arr+i) == 0x51){
+//				p = i+1;
+//			} else {
+//				arr_d[len1] = *(arr+i); //asciitohex
+//				len1++;
+//			}
+//		} else {
+//			arr_f[len2] = *(arr+i); //asciitohex
+//			len2++;
+//		}
+//	}
+//
+//
+//	uint8_t arr1[len1];
+//	uint8_t arr2[len2];
+//	for (int i = 0; i < len1; i++) {
+//		arr1[i] = arr_d[i];
+//		arr1[i] = arr1[i] - 0x23;
+//	}
+//	for (int i = 0; i < len2; i++) {
+//		arr2[i] = arr_f[i];
+//		arr2[i] = arr2[i] - 0x23;
+//	}
+//
+//	sscanf(arr1, "%d", &value_dec);
+//	sscanf(arr2, "%d", &value_fr);
+//
+//	float divider = 1;
+//	for (int i = 0; i < len2; i++) {
+//		divider *= 10;
+//	}
+
+	uint8_t arr__[length];
+	for (int i = 0; i < length; i++) {
+		arr__[i] = *(arr + i) - 0x23;
+	}
+	float res;
+	sscanf(arr__, "%f", &res);
+	//res = (float)strtof(arr__, 0);
+	*value = res;
+
+
+	//result =
+	//*value = ((float)value_dec + (float)(value_fr / divider));;
 }
 
 uint8_t hextoascii(uint8_t hex)

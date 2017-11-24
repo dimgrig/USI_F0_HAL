@@ -254,6 +254,39 @@ void write_string(char *s) {																// write string
 	cli += ((length + 3) & ~3);
 }
 
+void write_string_(char *s, uint8_t length) {
+
+	uint16_t n;
+	for(n = 0; n < length; n++) {
+
+		ft800memWrite8(RAM_CMD + cli + n, *(s+n));
+		//cli++;
+	}
+
+	uint8_t dec = (uint8_t)(length+1)/4;
+
+	uint8_t ost = length + 1 - dec*4;
+
+	if (ost == 0) {
+		ft800memWrite8(RAM_CMD + cli + n, 0);
+		cli += dec*4;
+	} else {
+		for(uint8_t i = 0; i < 4-ost; i++) {
+
+			ft800memWrite8(RAM_CMD + cli + n + i, 0x43);
+			//cli++;
+		}
+
+		ft800memWrite8(RAM_CMD + cli + n, 0);
+		cli += dec*4 + 4;
+	}
+
+	//ft800memWrite8(RAM_CMD + cli, '\x42');
+	//cli += length;
+	//cli++;
+	//cli += ((length + 3) & ~3);
+}
+
 void cmd(uint32_t cmd) {																	// write 32bit command to co-processor engine FIFO RAM_CMD
 
 	ft800memWrite32(RAM_CMD + cli, cmd);
@@ -558,6 +591,17 @@ void cmd_text(int16_t x, int16_t y, int16_t font, uint16_t opt, const char* s) {
 	ft800memWrite32(RAM_CMD + cli, ((opt << 16) | font));
 	cli += 4;
 	write_string(s);
+}
+
+void cmd_text_(int16_t x, int16_t y, int16_t font, uint16_t opt, const char* s, uint8_t length) {											// draw text
+
+	ft800memWrite32(RAM_CMD + cli, CMD_TEXT);
+	cli += 4;
+	ft800memWrite32(RAM_CMD + cli, ((y << 16) | x));
+	cli += 4;
+	ft800memWrite32(RAM_CMD + cli, ((opt << 16) | font));
+	cli += 4;
+	write_string_(s, length);
 }
 
 void cmd_number(int16_t x, int16_t y, int16_t font, uint16_t opt, int32_t n) {												// draw a decimal number

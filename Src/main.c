@@ -46,6 +46,7 @@
   ******************************************************************************
   */
 /* Includes ------------------------------------------------------------------*/
+
 #include "main.h"
 #include "stm32f0xx_hal.h"
 #include "usb_device.h"
@@ -119,13 +120,6 @@ double H = 0; //снятие
 
 #define DMA_BUFFER_SIZE 1024
 uint16_t DMA_BUFFER[DMA_BUFFER_SIZE];
-
-
-
-
-
-
-
 
 
 
@@ -265,7 +259,8 @@ int main(void)
   /* USER CODE END WHILE */
 	  HAL_GPIO_TogglePin(GPIOB, GPIO_PIN_10);
 
-	  int tag = ft800memRead8(REG_TOUCH_TAG);
+	  uint8_t tag = ft800memRead8(REG_TOUCH_TAG);
+	  uint8_t tag_, tag__ = 0;
 
 	  if (tag != 0){
 
@@ -357,9 +352,65 @@ int main(void)
 			break;
 			case 201:
 			case 202:
-			case 203:
-				//** FLASHStatus = FLASH_Write_DataWord(0, tag);
-				//ft_uint32_t storedValue = FLASH_Read_DataWord(0);
+			case 211:
+			case 212:
+			case 213:
+				tag__ = tag;
+				uint8_t length = 0;
+				uint8_t arr[32];
+				while (1){
+					tag = ft800memRead8(REG_TOUCH_TAG);
+					if  ((tag == 1) || (tag == 3)) {
+						break;
+					}
+					Keyboard(tag, &arr[0], &length);
+					while (tag != 0){
+						tag = ft800memRead8(REG_TOUCH_TAG);
+				    }
+				}
+				if (tag == 1) {
+					;//cancel
+				} else if (tag == 3) { //save new values
+					if ((tag__ == 201) || (tag__ == 202)){
+						if (tag__ == 201) {
+
+							float user_entered = 0;
+							char_array_to_float(&user_entered, &arr[0], length);
+							memcpy(data, &user_entered, sizeof(user_entered));
+
+							FLASH_ERASE();
+							WrittenValue = user_entered;
+							memcpy(data, &WrittenValue, sizeof(WrittenValue));    // send data
+							WrittenValue_int32 = (((data[3]<<24)&0xff000000) | ((data[2]<<16)&0xff0000) | ((data[1]<<8)&0xff00) | ((data[0]<<0)&0xff));
+							FLASH_WRITE_VALUE(FK_Address, WrittenValue_int32);
+
+							WrittenValue = F1B;
+							memcpy(data, &WrittenValue, sizeof(WrittenValue));    // send data
+							WrittenValue_int32 = (((data[3]<<24)&0xff000000) | ((data[2]<<16)&0xff0000) | ((data[1]<<8)&0xff00) | ((data[0]<<0)&0xff));
+							FLASH_WRITE_VALUE(FB_Address, WrittenValue_int32);
+							FLASH_WRITE_VALUE(FLASH_INIT_Address, 1);
+
+							F1K_int32 = FLASH_READ_VALUE(FK_Address);
+							F1B_int32 = FLASH_READ_VALUE(FB_Address);
+
+							data[0] = (F1K_int32>>0) & 0xFF;
+							data[1] = (F1K_int32>>8) & 0xFF;
+							data[2] = (F1K_int32>>16) & 0xFF;
+							data[3] = (F1K_int32>>24) & 0xFF;
+							memcpy(&F1K, data, sizeof(F1K));
+
+							data[0] = (F1B_int32>>0) & 0xFF;
+							data[1] = (F1B_int32>>8) & 0xFF;
+							data[2] = (F1B_int32>>16) & 0xFF;
+							data[3] = (F1B_int32>>24) & 0xFF;
+							memcpy(&F1B, data, sizeof(F1B));
+
+
+						} else {
+
+						}
+					}
+				}
 			break;
 		  }
 

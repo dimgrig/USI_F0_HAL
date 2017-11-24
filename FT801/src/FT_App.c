@@ -14,10 +14,10 @@ extern FT_PROGMEM ft_prog_uchar8_t SAMApp_L1[];
 
 //extern FT_PROGMEM ft_prog_uchar8_t SAMApp_L1[];
 
-ft_uint32_t SAMApp_Metric_L1_SIZE = 148;
-ft_uint32_t SAMApp_L1_SIZE = 6489;
+
 ft_uint32_t FONT_POS = 1000;
 ft_uint32_t R_FONT = 12;
+ft_uint32_t E_FONT = 18;
 ft_uint32_t Ft_CmdBuffer_Index;
 ft_uint32_t Ft_DlBuffer_Index;
 
@@ -109,14 +109,17 @@ ft_void_t FT_APP_BootupConfig()
 	ft800memWrite8(REG_GPIO_DIR,0xff);
 	ft800memWrite8(REG_GPIO,0x0ff);
 
-	FT_APP_Calibrate(0); // работает
+	FT_APP_Calibrate(0);
 
-	for (int i = 0; i < SAMApp_Metric_L1_SIZE; i++){
+	ft_uint32_t SAMApp_Metric_L1_SIZE = 148;
+	ft_uint32_t SAMApp_L1_SIZE = 6489;
+	for (ft_uint32_t i = 0; i < SAMApp_Metric_L1_SIZE; i++){
 		ft800memWrite8(RAM_G + FONT_POS + i, SAMApp_Metric_L1[i]);
 	}
-	for (int i = 0; i < SAMApp_L1_SIZE; i++){
+	for (ft_uint32_t i = 0; i < SAMApp_L1_SIZE; i++){
 		ft800memWrite8(RAM_G + FONT_POS + i + SAMApp_Metric_L1_SIZE, SAMApp_L1[i]);
 	}
+
 }
 
 ft_void_t FT_APP_Calibrate(ft_uint8_t mode)
@@ -346,40 +349,40 @@ ft_void_t FT_APP_Screen_Content(Screen_TypeDef SCREEN, State_TypeDef STATE,
 			cmd(TAG_MASK(0));
 
 
-			if (tag >= 201 & tag <=203) {
+			if (tag >= 211 & tag <=213) {
 				cmd(TAG_MASK(1));
-				cmd(TAG(201));          // assign the tag value
-				cmd_fgcolor((tag==201)?button_color_hover:button_color);
+				cmd(TAG(211));          // assign the tag value
+				cmd_fgcolor((tag==211)?button_color_hover:button_color);
 				cmd_button(10, 10, 100, 30, R_FONT, 0, "\x54");
 				cmd(TAG_MASK(0));
 
 				cmd(TAG_MASK(1));
-				cmd(TAG(202));          // assign the tag value
-				cmd_fgcolor((tag==202)?button_color_hover:button_color);
+				cmd(TAG(212));          // assign the tag value
+				cmd_fgcolor((tag==212)?button_color_hover:button_color);
 				cmd_button(10, 50, 100, 30, R_FONT, 0, "\x55");
 				cmd(TAG_MASK(0));
 
 				cmd(TAG_MASK(1));
-				cmd(TAG(203));          // assign the tag value
-				cmd_fgcolor((tag==203)?button_color_hover:button_color);
+				cmd(TAG(213));          // assign the tag value
+				cmd_fgcolor((tag==213)?button_color_hover:button_color);
 				cmd_button(10, 90, 100, 30, R_FONT, 0, "\x56");
 				cmd(TAG_MASK(0));
 			} else {
 				cmd(TAG_MASK(1));
-				cmd(TAG(201));          // assign the tag value
-				cmd_fgcolor((storedMaterial==201)?button_color_selected:button_color);
+				cmd(TAG(211));          // assign the tag value
+				cmd_fgcolor((storedMaterial==211)?button_color_selected:button_color);
 				cmd_button(10, 10, 100, 30, R_FONT, 0, "\x54");
 				cmd(TAG_MASK(0));
 
 				cmd(TAG_MASK(1));
-				cmd(TAG(202));          // assign the tag value
-				cmd_fgcolor((storedMaterial==202)?button_color_selected:button_color);
+				cmd(TAG(212));          // assign the tag value
+				cmd_fgcolor((storedMaterial==212)?button_color_selected:button_color);
 				cmd_button(10, 50, 100, 30, R_FONT, 0, "\x55");
 				cmd(TAG_MASK(0));
 
 				cmd(TAG_MASK(1));
-				cmd(TAG(203));          // assign the tag value
-				cmd_fgcolor((storedMaterial==203)?button_color_selected:button_color);
+				cmd(TAG(213));          // assign the tag value
+				cmd_fgcolor((storedMaterial==213)?button_color_selected:button_color);
 				cmd_button(10, 90, 100, 30, R_FONT, 0, "\x56");
 				cmd(TAG_MASK(0));
 			}
@@ -393,37 +396,22 @@ ft_void_t FT_APP_Screen_Content(Screen_TypeDef SCREEN, State_TypeDef STATE,
 			cmd_button(5, 190, 100, 40, R_FONT, 0, "\x5f");
 			cmd(TAG_MASK(0));
 
-				uint8_t length=0;
-				uint8_t arr[32];
+			uint8_t length=0;
+			uint8_t arr[32];
+			cmd(TAG_MASK(1));
+			cmd(TAG(201));          // assign the tag value
+			cmd_fgcolor((tag==201)?button_color_hover:button_color);
+			float_to_char_array(F1K, &arr[0], &length, 3);
+			cmd_button(10, 10, 100, 30, E_FONT, 0, arr);
+			cmd(TAG_MASK(0));
 
-				cmd(TAG_MASK(1));
-				cmd(TAG(201));          // assign the tag value
-				cmd_fgcolor((tag==201)?button_color_hover:button_color);
-
-				float_to_char_array(F1K, &arr[0], &length, 1000);
-				uint8_t arr1[length+1];
-				for (int i = 0; i < length; i++) {
-					arr1[i] = arr[i];
-				}
-				arr1[length] = '\0';
-				cmd_button(10, 10, 100, 30, 18, 0, arr1);
-				cmd(TAG_MASK(0));
-
-
-				length=0;
-
-				cmd(TAG_MASK(1));
-				cmd(TAG(202));          // assign the tag value
-				cmd_fgcolor((tag==202)?button_color_hover:button_color);
-
-				float_to_char_array(F1B, &arr[0], &length, 1000);
-				uint8_t arr2[length+1];
-				for (int i = 0; i < length; i++) {
-					arr2[i] = arr[i];
-				}
-				arr2[length] = '\0';
-				cmd_button(10, 50, 100, 30, 18, 0, arr2);
-				cmd(TAG_MASK(0));
+			length=0;
+			cmd(TAG_MASK(1));
+			cmd(TAG(202));          // assign the tag value
+			cmd_fgcolor((tag==202)?button_color_hover:button_color);
+			float_to_char_array(F1B, &arr[0], &length, 3);
+			cmd_button(10, 50, 100, 30, E_FONT, 0, arr);
+			cmd(TAG_MASK(0));
 
 			//***Keyboard(phost, tag);
 		break;
@@ -458,22 +446,19 @@ ft_void_t FT_APP_Screen_Content(Screen_TypeDef SCREEN, State_TypeDef STATE,
 
 ft_uint16_t FT_APP_Screen_BasicScreen(Screen_TypeDef SCREEN)
 {
-	unsigned int cmdBufferRd = 0x0000;											// Used to navigate command ring buffer
-	unsigned int cmdBufferWr = 0x0000;											// Used to navigate command ring buffer
+	ft_uint32_t cmdBufferRd = 0x0000;											// Used to navigate command ring buffer
+	ft_uint32_t cmdBufferWr = 0x0000;											// Used to navigate command ring buffer
 
 	do
 	{
-		cmdBufferRd = ft800memRead16(REG_CMD_READ);															// Read the graphics processor read pointer
-		cmdBufferWr = ft800memRead16(REG_CMD_WRITE); 														// Read the graphics processor write pointer
+		cmdBufferRd = ft800memRead32(REG_CMD_READ);															// Read the graphics processor read pointer
+		cmdBufferWr = ft800memRead32(REG_CMD_WRITE); 														// Read the graphics processor write pointer
 	} while (cmdBufferWr != cmdBufferRd);
 	cli_dub = cmdBufferWr;
 	cli = 0;
 
-	ft800memWrite16(REG_CMD_WRITE, 0);
-	ft800memWrite16(REG_CMD_READ, 0);
-
-
-
+	ft800memWrite32(REG_CMD_WRITE, 0);
+	ft800memWrite32(REG_CMD_READ, 0);
 
 	cmd_dlstart();
 
@@ -507,11 +492,24 @@ ft_uint16_t FT_APP_Screen_BasicScreen(Screen_TypeDef SCREEN)
 	ft_uint16_t dloffset = 0;
 
 	ft800memWrite16(REG_CMD_WRITE, cli);
+//	uint16_t TimeOut = 0;
 	do
 	{
-		cmdBufferRd = ft800memRead16(REG_CMD_READ);															// Read the graphics processor read pointer
-		cmdBufferWr = ft800memRead16(REG_CMD_WRITE); 														// Read the graphics processor write pointer
+		cmdBufferRd = ft800memRead32(REG_CMD_READ);															// Read the graphics processor read pointer
+		cmdBufferWr = ft800memRead32(REG_CMD_WRITE); 														// Read the graphics processor write pointer
+//		TimeOut++;
+//		if(TimeOut > 0x0FFF){
+//			break;
+//		}
 	} while (cmdBufferWr != cmdBufferRd);
+//	if(TimeOut > 0x0FFF){
+//
+//		ft800memWrite32(REG_CMD_WRITE, cli);
+////		ft800memWrite32(REG_CMD_READ, cli);
+//
+//		cmdBufferRd = ft800memRead32(REG_CMD_READ);															// Read the graphics processor read pointer
+//
+//	}
 
 	dloffset = ft800memRead16(REG_CMD_DL); // размер коируемого дисплей-листа
 
@@ -663,106 +661,176 @@ void FT_APP_Screen_Test()
 
 
 
-//ft_void_t Keyboard(Ft_Gpu_Hal_Context_t *phost, ft_uint16_t tag)
-//{
-////	ft_uint8_t TextFont = 12;
-////	ft_uint8_t ButtonW = 40;
-////	ft_uint8_t ButtonH = 40;
-////	ft_uint8_t yBtnDst = 5;
-////	ft_uint8_t CurrChar = '|';
-////	ft_uint8_t CurrTag = 0;
-////	ft_uint8_t PrevTag = 0;
-////	//ft_uint8_t Pendown = 1;
-////	ft_uint8_t CurrTextIdx = 0;
-//	ft_uint16_t FT_DispWidth = 320;
-////	ft_uint8_t yOffset = 0;
-//
-//	/* Check the user input and then add the characters into array */
-//	CurrTag = tag;
-////	Pendown = ((Ft_Gpu_Hal_Rd32(phost,REG_TOUCH_DIRECT_XY)>>31) & 0x01);
-//	CurrChar = CurrTag;
-//
-//	if(CurrTag==249)
-//	{
-//		CurrTag=0;
-//	}
-//	if(0 == CurrTag)
-//	{
-//		CurrChar = '\x52';
-//	}
-//
-//	/* check whether pendown has happened */
-//	if( /*( 1 == Pendown) &&*/ (0 != PrevTag))
-//	{
+ft_void_t Keyboard(ft_uint16_t tag, uint8_t *arr, uint8_t* length)
+{
+//	ft_uint8_t TextFont = 12;
+//	ft_uint8_t ButtonW = 40;
+//	ft_uint8_t ButtonH = 40;
+//	ft_uint8_t yBtnDst = 5;
+//	ft_uint8_t CurrChar = '|';
+//	ft_uint8_t CurrTag = 0;
+//	ft_uint8_t PrevTag = 0;
+//	//ft_uint8_t Pendown = 1;
+//	ft_uint8_t CurrTextIdx = 0;
+	ft_uint16_t FT_DispWidth = 320;
+//	ft_uint8_t yOffset = 0;
+
+
+	unsigned int cmdBufferRd = 0x0000;											// Used to navigate command ring buffer
+	unsigned int cmdBufferWr = 0x0000;											// Used to navigate command ring buffer
+
+	do
+	{
+		cmdBufferRd = ft800memRead16(REG_CMD_READ);															// Read the graphics processor read pointer
+		cmdBufferWr = ft800memRead16(REG_CMD_WRITE); 														// Read the graphics processor write pointer
+	} while (cmdBufferWr != cmdBufferRd);
+	cli_dub = cmdBufferWr;
+	cli = 0;
+
+	ft800memWrite16(REG_CMD_WRITE, 0);
+	ft800memWrite16(REG_CMD_READ, 0);
+
+	cmd_dlstart();
+
+	cmd(CLEAR_COLOR_RGB(0,0,0));
+	cmd(CLEAR(0xff,0xff,0xff));
+	cmd(COLOR_RGB(0xff,0xd8,0x00));
+
+	cmd(TAG_MASK(1));
+	cmd(TAG(1));          // assign the tag value
+	cmd_fgcolor((tag==1)?button_color_hover:button_color);
+	cmd_button(5, 190, 100, 40, R_FONT, 0, "\x5f");
+	cmd(TAG_MASK(0));
+
+	cmd(TAG_MASK(1));
+	cmd(TAG(3));          // assign the tag value
+	cmd_fgcolor((tag==3)?button_color_hover:button_color);
+	cmd_button(215, 190, 100, 40, R_FONT, 0, "\x25\x04\x24\x20\x26");
+	cmd(TAG_MASK(0));
+
+
+	/* Check the user input and then add the characters into array */
+	CurrTag = tag;
+//	Pendown = ((Ft_Gpu_Hal_Rd32(phost,REG_TOUCH_DIRECT_XY)>>31) & 0x01);
+
+
+	if(CurrTag > 200)
+	{
+		CurrTag=0;
+	}
+	if(CurrTag == 0)
+	{
+		CurrChar = '\x52';
+	} else {
+		CurrChar = CurrTag;
+	}
+
+	/* check whether pendown has happened */
+	if( /*( 1 == Pendown) &&*/ (0 != PrevTag))
+	{
 //		CurrTextIdx++;
-////		/* clear all the charaters after 24 are pressed */
-////		if(CurrTextIdx > 24)
-////		{
-////			CurrTextIdx = 0;
-////		}
-//	}
-//
-////	Ft_Gpu_CoCmd_Dlstart(phost);
-////	Ft_App_WrCoCmd_Buffer(phost,CLEAR_COLOR_RGB(64,64,64));
-////	Ft_App_WrCoCmd_Buffer(phost,CLEAR(1,1,1));
-////	Ft_App_WrCoCmd_Buffer(phost,COLOR_RGB(0xff,0xff,0xff));
-//
-//	/* Draw text entered by user */
-//	/* make sure the array is a string */
+		(*length)++;
+
+//		/* clear all the charaters after 24 are pressed */
+//		if(CurrTextIdx > 24)
+//		{
+//			CurrTextIdx = 0;
+//		}
+	}
+
+//	Ft_Gpu_CoCmd_Dlstart(phost);
+//	Ft_App_WrCoCmd_Buffer(phost,CLEAR_COLOR_RGB(64,64,64));
+//	Ft_App_WrCoCmd_Buffer(phost,CLEAR(1,1,1));
+//	Ft_App_WrCoCmd_Buffer(phost,COLOR_RGB(0xff,0xff,0xff));
+
+	/* Draw text entered by user */
+	/* make sure the array is a string */
 //	DispText[CurrTextIdx] = CurrChar;
-////	DispText[CurrTextIdx + 1] = '\0';
-//	Ft_App_WrCoCmd_Buffer(phost,TAG_MASK(0));
-//	Ft_Gpu_CoCmd_Text(phost,FT_DispWidth/2, 40, 12, OPT_CENTER, DispText);//text info
-//	Ft_App_WrCoCmd_Buffer(phost,TAG_MASK(1));
-////	yOffset = 80 + 10;
-//	/* Construct a simple keyboard - note that the tags associated with the keys are the character values given in the arguments */
-//	Ft_Gpu_CoCmd_FgColor(phost,0x404080);
-//	Ft_Gpu_CoCmd_GradColor(phost,0x00ff00);
+	*(arr+*length) = CurrChar;
+	ft_uint8_t arr__[*length+1];
+	for(int i = 0; i < *length+1; i++) {
+		arr__[i] = *(arr + i);
+	}
+	arr__[*length+1] = "\x52";
+//	DispText[CurrTextIdx + 1] = '\0';
+	cmd_text_(FT_DispWidth/2, 40, R_FONT, OPT_CENTER, arr, *length+1);//text info
+//	yOffset = 80 + 10;
+	/* Construct a simple keyboard - note that the tags associated with the keys are the character values given in the arguments */
+	//cmd_fgcolor(0x404080);
+	//cmd_gradcolor(0x00ff00);
+
+// Ft_Gpu_CoCmd_Keys(phost, yBtnDst, yOffset, 10*ButtonW, ButtonH, TextFont,(OPT_CENTER | CurrTag), "qwertyuiop");
+// Ft_Gpu_CoCmd_GradColor(phost,0x00ffff);
+// yOffset += ButtonH + yBtnDst;
+// Ft_Gpu_CoCmd_Keys(phost, yBtnDst, yOffset, 10*ButtonW, ButtonH, TextFont,(OPT_CENTER | CurrTag), "asdfghjkl");
+// Ft_Gpu_CoCmd_GradColor(phost,0xffff00);
+// yOffset += ButtonH + yBtnDst;
+// Ft_Gpu_CoCmd_Keys(phost, yBtnDst, yOffset, 10*ButtonW, ButtonH, TextFont,(OPT_CENTER | CurrTag), "zxcvbnm");//hilight button z
+// yOffset += ButtonH + yBtnDst;
+// Ft_App_WrCoCmd_Buffer(phost,TAG(' '));
 //
-//// Ft_Gpu_CoCmd_Keys(phost, yBtnDst, yOffset, 10*ButtonW, ButtonH, TextFont,(OPT_CENTER | CurrTag), "qwertyuiop");
-//// Ft_Gpu_CoCmd_GradColor(phost,0x00ffff);
-//// yOffset += ButtonH + yBtnDst;
-//// Ft_Gpu_CoCmd_Keys(phost, yBtnDst, yOffset, 10*ButtonW, ButtonH, TextFont,(OPT_CENTER | CurrTag), "asdfghjkl");
-//// Ft_Gpu_CoCmd_GradColor(phost,0xffff00);
-//// yOffset += ButtonH + yBtnDst;
-//// Ft_Gpu_CoCmd_Keys(phost, yBtnDst, yOffset, 10*ButtonW, ButtonH, TextFont,(OPT_CENTER | CurrTag), "zxcvbnm");//hilight button z
-//// yOffset += ButtonH + yBtnDst;
-//// Ft_App_WrCoCmd_Buffer(phost,TAG(' '));
-////
-//// if(' ' == CurrTag)
-//// {
-////	 Ft_Gpu_CoCmd_Button(phost,yBtnDst, yOffset, 10*ButtonW, ButtonH, TextFont, OPT_CENTER | OPT_FLAT, " ");//mandatory to give '\0' at the end to make sure coprocessor understands the string end
-//// }
-//// else
-//// {
-////	 Ft_Gpu_CoCmd_Button(phost,yBtnDst, yOffset, 10*ButtonW, ButtonH, TextFont, OPT_CENTER, " ");//mandatory to give '\0' at the end to make sure coprocessor understands the string end
-//// }
-//
-//
-////	yOffset = 80 + 10;
-//	Ft_Gpu_CoCmd_Keys(phost, 40, 80, 6*40, 40, 12, (0 | CurrTag), "\x53\x54\x55\x56\x57\x58");
-//	Ft_Gpu_CoCmd_Keys(phost, 40, 140, 6*40, 40, 12, (0 | CurrTag), "\x59\x5a\x5b\x5c\x50\x51");
-////	yOffset += ButtonH + yBtnDst;
-////	Ft_Gpu_CoCmd_Keys(phost, 11*ButtonW, yOffset, 3*ButtonW, ButtonH, TextFont, (0 | CurrTag), "456");
-////	yOffset += ButtonH + yBtnDst;
-////	Ft_Gpu_CoCmd_Keys(phost, 11*ButtonW, yOffset, 3*ButtonW, ButtonH, TextFont, (0 | CurrTag), "123");
-////	yOffset += ButtonH + yBtnDst;
-////	Ft_App_WrCoCmd_Buffer(phost,COLOR_A(255));
-////	Ft_Gpu_CoCmd_Keys(phost, 11*ButtonW, yOffset, 3*ButtonW, ButtonH, TextFont, (0 | CurrTag), "0.");//hilight button 0
-//	Ft_App_WrCoCmd_Buffer(phost,COLOR_RGB(0xff,0x00,0x00));
-//
-////	StringArray[0] = '\0';
-////	strcat(StringArray,"Next demo in ");
-////	Ft_Gpu_Hal_Dec2Ascii(StringArray,(ThisDemoEnd/100)+1);
-////	strcat(StringArray,"s");
-////	Ft_Gpu_CoCmd_Text(phost,FT_DispWidth, (FT_DispHeight-12), 20, OPT_RIGHTX,StringArray);
-////	if(tftConfig == RTP35 || tftConfig == RTP43 || tftConfig == CTP35 || tftConfig== CTP43)
-////	{
-////		Ft_App_WrCoCmd_Buffer(phost,COLOR_RGB(0xff,0xff,0xff));
-////		Ft_App_WrCoCmd_Buffer(phost,TAG(249));
-////		Ft_Gpu_CoCmd_Button(phost,FT_DispWidth-65,FT_DispHeight-42,60,30,20,0, "SKIP->");
-////		CurrTag2 = Ft_Gpu_Hal_Rd8(phost,REG_TOUCH_TAG);
-////	}
-//
-//	PrevTag = CurrTag;
-//}
+// if(' ' == CurrTag)
+// {
+//	 Ft_Gpu_CoCmd_Button(phost,yBtnDst, yOffset, 10*ButtonW, ButtonH, TextFont, OPT_CENTER | OPT_FLAT, " ");//mandatory to give '\0' at the end to make sure coprocessor understands the string end
+// }
+// else
+// {
+//	 Ft_Gpu_CoCmd_Button(phost,yBtnDst, yOffset, 10*ButtonW, ButtonH, TextFont, OPT_CENTER, " ");//mandatory to give '\0' at the end to make sure coprocessor understands the string end
+// }
+
+
+//	yOffset = 80 + 10;
+	cmd(TAG_MASK(1));
+	cmd_keys(40, 80, 6*40, 40, 12, (0 | CurrTag), "\x53\x54\x55\x56\x57\x58");
+	cmd_keys(40, 140, 6*40, 40, 12, (0 | CurrTag), "\x59\x5a\x5b\x5c\x50\x51");
+	cmd(TAG_MASK(0));
+//	yOffset += ButtonH + yBtnDst;
+//	Ft_Gpu_CoCmd_Keys(phost, 11*ButtonW, yOffset, 3*ButtonW, ButtonH, TextFont, (0 | CurrTag), "456");
+//	yOffset += ButtonH + yBtnDst;
+//	Ft_Gpu_CoCmd_Keys(phost, 11*ButtonW, yOffset, 3*ButtonW, ButtonH, TextFont, (0 | CurrTag), "123");
+//	yOffset += ButtonH + yBtnDst;
+//	Ft_App_WrCoCmd_Buffer(phost,COLOR_A(255));
+//	Ft_Gpu_CoCmd_Keys(phost, 11*ButtonW, yOffset, 3*ButtonW, ButtonH, TextFont, (0 | CurrTag), "0.");//hilight button 0
+	cmd(COLOR_RGB(0xff,0x00,0x00));
+
+//	StringArray[0] = '\0';
+//	strcat(StringArray,"Next demo in ");
+//	Ft_Gpu_Hal_Dec2Ascii(StringArray,(ThisDemoEnd/100)+1);
+//	strcat(StringArray,"s");
+//	Ft_Gpu_CoCmd_Text(phost,FT_DispWidth, (FT_DispHeight-12), 20, OPT_RIGHTX,StringArray);
+//	if(tftConfig == RTP35 || tftConfig == RTP43 || tftConfig == CTP35 || tftConfig== CTP43)
+//	{
+//		Ft_App_WrCoCmd_Buffer(phost,COLOR_RGB(0xff,0xff,0xff));
+//		Ft_App_WrCoCmd_Buffer(phost,TAG(249));
+//		Ft_Gpu_CoCmd_Button(phost,FT_DispWidth-65,FT_DispHeight-42,60,30,20,0, "SKIP->");
+//		CurrTag2 = Ft_Gpu_Hal_Rd8(phost,REG_TOUCH_TAG);
+//	}
+
+	PrevTag = CurrTag;
+
+	cmd(DL_END);
+	cmd(DISPLAY());//cmd(DL_DISPLAY);
+	cmd_swap();//cmd(CMD_SWAP);
+
+//	cli__ = cli;
+//	cli_temp = cli;
+//	while (cli_dub > cli) {
+//		cmd(0);
+//	}
+//	cli_dub = 0;
+
+	cli_temp = cli;
+	while (cli_dub > cli) {
+		cmd(0);
+	}
+	cli_dub = cli_temp;
+
+	ft800memWrite32(REG_CMD_WRITE, cli );
+	do
+	{
+		cmdBufferRd = ft800memRead32(REG_CMD_READ);															// Read the graphics processor read pointer
+		cmdBufferWr = ft800memRead32(REG_CMD_WRITE); 														// Read the graphics processor write pointer
+	} while (cmdBufferWr != cmdBufferRd);
+
+	HAL_Delay(5);
+}
