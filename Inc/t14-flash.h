@@ -31,7 +31,9 @@ typedef enum {FAILED = 0, PASSED = !FAILED} TestStatus;
 #define FLASH_INIT_Address FLASH_USER_START_ADDR + 0x00000000
 #define FK_Address FLASH_USER_START_ADDR + 0x00000100
 #define FB_Address FLASH_USER_START_ADDR + 0x00000150
-
+#define AK_Address FLASH_USER_START_ADDR + 0x00000200
+#define AB_Address FLASH_USER_START_ADDR + 0x00000250
+#define FF_Address FLASH_USER_START_ADDR + 0x00000300
 
 //uint32_t Address = 0;
 uint32_t PageError;

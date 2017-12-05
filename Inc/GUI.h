@@ -17,6 +17,7 @@ typedef enum
 	MAIN = 0x00, /*!<  */
 	SETTINGS   = 0x01, /*!< */
 	MATERIAL  = 0x02, /*!<  */
-	CALIBRATION  = 0x03  /*!<  */
+	CALIBRATION  = 0x03,  /*!<  */
+	STEPPER  = 0x04  /*!<  */
 }Screen_TypeDef;
 

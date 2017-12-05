@@ -12,55 +12,77 @@ void float_to_char_array(float value, uint8_t *arr, uint8_t* length, uint8_t dig
 	uint8_t value_c_length = 10;
 	uint8_t value_c[value_c_length];
 
-	uint32_t mult = 1;
-	for (int i = 0; i < digits; i++){
-		mult *= 10;
+	switch (digits) {
+		case 1:
+			sprintf(arr, "%.1f", value);
+		break;
+		case 2:
+			sprintf(arr, "%.2f", value);
+		break;
+		case 4:
+			sprintf(arr, "%.4f", value);
+		break;
+		case 5:
+			sprintf(arr, "%.5f", value);
+		break;
+		case 6:
+			sprintf(arr, "%.6f", value);
+		break;
+		case 7:
+			sprintf(arr, "%.7f", value);
+		break;
+		default:
+			sprintf(arr, "%.3f", value);
 	}
-	uint32_t value_dec = (uint32_t)value;
-	uint32_t value_fr = (uint32_t) (( value - (uint32_t)(value) ) * mult );
-	//uint8_t length = 0;
-	uint8_t l = 0;
-	//uint8_t arr[32];
-
-	if (value_dec == 0){
-
-		*(arr+*length) = hextoascii(0); //
-		(*length)++;
-	} else {
-		l=0;
-		while(value_dec != 0)
-		{
-			value_c[l] = hextoascii(value_dec%10);//
-			value_dec /= 10;// n = n/10
-			l++;
-		}
-
-		for (int i = 0; i < l; i++){
-			*(arr+*length) = value_c[l-i-1];
-			(*length)++;
-		}
-	}
-
-	*(arr+*length) = 0x2E;
-	(*length)++;
-
-	if (value_fr == 0){
-		*(arr+*length) = hextoascii(0);//
-		(*length)++;
-	} else {
-		l=0;
-		while(value_fr != 0)
-		{
-			value_c[l] = hextoascii(value_fr%10);//
-			value_fr /= 10;// n = n/10
-			l++;
-		}
-
-		for (int i = 0; i < l; i++){
-			*(arr+*length) = value_c[l-i-1];
-			(*length)++;
-		}
-	}
+//	uint32_t mult = 1;
+//	for (int i = 0; i < digits; i++){
+//		mult *= 10;
+//	}
+//	uint32_t value_dec = (uint32_t)value;
+//	uint32_t value_fr = (uint32_t) (( value - (uint32_t)(value) ) * mult );
+//	//uint8_t length = 0;
+//	uint8_t l = 0;
+//	//uint8_t arr[32];
+//
+//	if (value_dec == 0){
+//
+//		*(arr+*length) = hextoascii(0); //
+//		(*length)++;
+//	} else {
+//		l=0;
+//		while(value_dec != 0)
+//		{
+//			value_c[l] = hextoascii(value_dec%10);//
+//			value_dec /= 10;// n = n/10
+//			l++;
+//		}
+//
+//		for (int i = 0; i < l; i++){
+//			*(arr+*length) = value_c[l-i-1];
+//			(*length)++;
+//		}
+//	}
+//
+//	*(arr+*length) = 0x2E;
+//	(*length)++;
+//
+//	if (value_fr == 0){
+//		*(arr+*length) = hextoascii(0);//
+//		(*length)++;
+//	} else {
+//		l=0;
+//		while(value_fr != 0)
+//		{
+//			value_c[l] = hextoascii(value_fr%10);//
+//			value_fr /= 10;// n = n/10
+//			l++;
+//		}
+//
+//		for (int i = 0; i < l; i++){
+//			*(arr+*length) = value_c[l-i-1];
+//			(*length)++;
+//		}
+//	}
 
 }
 

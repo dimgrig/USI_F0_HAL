@@ -335,6 +335,12 @@ ft_void_t FT_APP_Screen_Content(Screen_TypeDef SCREEN, State_TypeDef STATE,
 			cmd_button( 110, 60, 100, 40, R_FONT, 0, "\x17\x02\x1a\x14\x04\x24\x20\x06\x18\x02"); //Калибровка
 			cmd(TAG_MASK(0));
 
+			cmd(TAG_MASK(1));
+			cmd(TAG(6));          // assign the tag value
+			cmd_fgcolor((tag==6)?button_color_hover:button_color);
+			cmd_button( 110, 110, 100, 40, R_FONT, 0, "\x33\x02\x08"); //Шаг
+			cmd(TAG_MASK(0));
+
 		break;
 		case MATERIAL:
 
@@ -413,6 +419,55 @@ ft_void_t FT_APP_Screen_Content(Screen_TypeDef SCREEN, State_TypeDef STATE,
 			cmd_button(10, 50, 100, 30, E_FONT, 0, arr);
 			cmd(TAG_MASK(0));
 
+			length=0;
+			cmd(TAG_MASK(1));
+			cmd(TAG(203));          // assign the tag value
+			cmd_fgcolor((tag==203)?button_color_hover:button_color);
+			float_to_char_array(A1K, &arr[0], &length, 7);
+			cmd_button(110, 10, 100, 30, E_FONT, 0, arr);
+			cmd(TAG_MASK(0));
+
+			length=0;
+			cmd(TAG_MASK(1));
+			cmd(TAG(204));          // assign the tag value
+			cmd_fgcolor((tag==204)?button_color_hover:button_color);
+			float_to_char_array(A1B, &arr[0], &length, 3);
+			cmd_button(110, 50, 100, 30, E_FONT, 0, arr);
+			cmd(TAG_MASK(0));
+
+			cmd(TAG_MASK(1));
+			cmd(TAG(205));          // assign the tag value
+			cmd_fgcolor((F1F==1)?button_color_hover:button_color);
+			//float_to_char_array(F1F, &arr[0], &length, 0);
+			//cmd_button(10, 100, 100, 30, E_FONT, 0, arr);
+			cmd_button(10, 100, 100, 30, E_FONT, 0, "Filter");
+			cmd(TAG_MASK(0));
+
+			//***Keyboard(phost, tag);
+		break;
+
+		case STEPPER:
+			cmd(COLOR_RGB(0xff,0xd8,0x00));
+
+			cmd(TAG_MASK(1));
+			cmd(TAG(1));          // assign the tag value
+			cmd_fgcolor((tag==1)?button_color_hover:button_color);
+			cmd_button(5, 190, 100, 40, R_FONT, 0, "\x5f");
+			cmd(TAG_MASK(0));
+
+			cmd(TAG_MASK(1));
+			cmd(TAG(21));
+			cmd_fgcolor((tag==21)?button_color_hover:button_color);
+			cmd_button(10, 10, 100, 30, R_FONT, 0, "\x5f");
+			cmd(TAG_MASK(0));
+
+			length=0;
+			cmd(TAG_MASK(1));
+			cmd(TAG(22));
+			cmd_fgcolor((tag==22)?button_color_hover:button_color);
+			cmd_button(110, 10, 100, 30, R_FONT, 0, "\x61");
+			cmd(TAG_MASK(0));
+
 			//***Keyboard(phost, tag);
 		break;
 	}
@@ -485,6 +540,9 @@ ft_uint16_t FT_APP_Screen_BasicScreen(Screen_TypeDef SCREEN)
 			;//API_Screen_MaterialScreen(phost, SCREEN);
 		break;
 		case CALIBRATION:
+			;//API_Screen_LogsScreen(phost);
+		break;
+		case STEPPER:
 			;//API_Screen_LogsScreen(phost);
 		break;
 	}
@@ -705,7 +763,7 @@ ft_void_t Keyboard(ft_uint16_t tag, uint8_t *arr, uint8_t* length)
 	cmd(TAG_MASK(1));
 	cmd(TAG(3));          // assign the tag value
 	cmd_fgcolor((tag==3)?button_color_hover:button_color);
-	cmd_button(215, 190, 100, 40, R_FONT, 0, "\x25\x04\x24\x20\x26");
+	cmd_button(215, 190, 100, 40, R_FONT, 0, "\x05\x06\x20\x0a"); //Ввод
 	cmd(TAG_MASK(0));
 
 
