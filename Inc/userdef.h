@@ -19,12 +19,25 @@
 #define A1K_init 0.00002861f //0.0857f
 #define A1B_init 0.0f
 #define F1F_init 1.0f
+#define Ktor_init 0.00025f
+#define Mtor_init 0.9f
+#define STK_init 0.343f
+#define SBK_init 3.3f
 
 float F1K;
 float F1B;
 float A1K;
 float A1B;
 float F1F;
+float Ktor;
+float Mtor;
+float STK;
+float SBK;
+
+#define MATERIAL_init 211
+
+float MATERIAL_CHOOSEN;
+
 
 uint8_t hextoascii(uint8_t hex);
 uint8_t asciitohex(uint8_t ascii);

@@ -197,7 +197,7 @@ ft_void_t FT_APP_Screen_Content(Screen_TypeDef SCREEN, State_TypeDef STATE,
 	//ft800memWrite32(REG_CMD_WRITE, cli);
 	//ft800memWrite32(REG_CMD_READ, cli);
 
-	ft_uint32_t storedMaterial;
+	//ft_uint32_t storedMaterial;
 
 	uint8_t value_c_length = 10;
 	char value_c[value_c_length];
@@ -376,19 +376,19 @@ ft_void_t FT_APP_Screen_Content(Screen_TypeDef SCREEN, State_TypeDef STATE,
 			} else {
 				cmd(TAG_MASK(1));
 				cmd(TAG(211));          // assign the tag value
-				cmd_fgcolor((storedMaterial==211)?button_color_selected:button_color);
+				cmd_fgcolor((MATERIAL_CHOOSEN==211)?button_color_selected:button_color);
 				cmd_button(10, 10, 100, 30, R_FONT, 0, "\x54");
 				cmd(TAG_MASK(0));
 
 				cmd(TAG_MASK(1));
 				cmd(TAG(212));          // assign the tag value
-				cmd_fgcolor((storedMaterial==212)?button_color_selected:button_color);
+				cmd_fgcolor((MATERIAL_CHOOSEN==212)?button_color_selected:button_color);
 				cmd_button(10, 50, 100, 30, R_FONT, 0, "\x55");
 				cmd(TAG_MASK(0));
 
 				cmd(TAG_MASK(1));
 				cmd(TAG(213));          // assign the tag value
-				cmd_fgcolor((storedMaterial==213)?button_color_selected:button_color);
+				cmd_fgcolor((MATERIAL_CHOOSEN==213)?button_color_selected:button_color);
 				cmd_button(10, 90, 100, 30, R_FONT, 0, "\x56");
 				cmd(TAG_MASK(0));
 			}
@@ -408,7 +408,7 @@ ft_void_t FT_APP_Screen_Content(Screen_TypeDef SCREEN, State_TypeDef STATE,
 			cmd(TAG(201));          // assign the tag value
 			cmd_fgcolor((tag==201)?button_color_hover:button_color);
 			float_to_char_array(F1K, &arr[0], &length, 3);
-			cmd_button(10, 10, 100, 30, E_FONT, 0, arr);
+			cmd_button(20, 37, 80, 30, E_FONT, 0, arr);
 			cmd(TAG_MASK(0));
 
 			length=0;
@@ -416,7 +416,7 @@ ft_void_t FT_APP_Screen_Content(Screen_TypeDef SCREEN, State_TypeDef STATE,
 			cmd(TAG(202));          // assign the tag value
 			cmd_fgcolor((tag==202)?button_color_hover:button_color);
 			float_to_char_array(F1B, &arr[0], &length, 3);
-			cmd_button(10, 50, 100, 30, E_FONT, 0, arr);
+			cmd_button(20, 77, 80, 30, E_FONT, 0, arr);
 			cmd(TAG_MASK(0));
 
 			length=0;
@@ -424,7 +424,7 @@ ft_void_t FT_APP_Screen_Content(Screen_TypeDef SCREEN, State_TypeDef STATE,
 			cmd(TAG(203));          // assign the tag value
 			cmd_fgcolor((tag==203)?button_color_hover:button_color);
 			float_to_char_array(A1K, &arr[0], &length, 7);
-			cmd_button(110, 10, 100, 30, E_FONT, 0, arr);
+			cmd_button(125, 37, 85, 30, E_FONT, 0, arr);
 			cmd(TAG_MASK(0));
 
 			length=0;
@@ -432,18 +432,57 @@ ft_void_t FT_APP_Screen_Content(Screen_TypeDef SCREEN, State_TypeDef STATE,
 			cmd(TAG(204));          // assign the tag value
 			cmd_fgcolor((tag==204)?button_color_hover:button_color);
 			float_to_char_array(A1B, &arr[0], &length, 3);
-			cmd_button(110, 50, 100, 30, E_FONT, 0, arr);
+			cmd_button(125, 77, 85, 30, E_FONT, 0, arr);
 			cmd(TAG_MASK(0));
 
 			cmd(TAG_MASK(1));
 			cmd(TAG(205));          // assign the tag value
-			cmd_fgcolor((F1F==1)?button_color_hover:button_color);
+			cmd_fgcolor((F1F==1)?button_color_selected:button_color);
 			//float_to_char_array(F1F, &arr[0], &length, 0);
 			//cmd_button(10, 100, 100, 30, E_FONT, 0, arr);
-			cmd_button(10, 100, 100, 30, E_FONT, 0, "Filter");
+			cmd_button(2, 117, 100, 30, R_FONT, 0, "\x2b\x14\x1a\x3c\x28\x24");
 			cmd(TAG_MASK(0));
 
-			//***Keyboard(phost, tag);
+			length=0;
+			cmd(TAG_MASK(1));
+			cmd(TAG(206));          // assign the tag value
+			cmd_fgcolor((tag==206)?button_color_hover:button_color);
+			float_to_char_array(Ktor, &arr[0], &length, 6);
+			cmd_button(235, 37, 85, 30, E_FONT, 0, arr);
+			cmd(TAG_MASK(0));
+
+			length=0;
+			cmd(TAG_MASK(1));
+			cmd(TAG(207));          // assign the tag value
+			cmd_fgcolor((tag==207)?button_color_hover:button_color);
+			float_to_char_array(Mtor, &arr[0], &length, 6);
+			cmd_button(235, 77, 85, 30, E_FONT, 0, arr);
+			cmd(TAG_MASK(0));
+
+			cmd_text(2, 7, R_FONT, 0, "\x25\x1b\x1b");
+			cmd_text(107, 7, R_FONT, 0, "\x19\x13\x23\x50\x09\x01");
+			cmd_text(217, 7, R_FONT, 0, "\x27\x02\x24\x14\x24\x20\x06\x18\x02");
+
+			cmd_text(2, 45, E_FONT, 0, "K=");
+			cmd_text(107, 45, E_FONT, 0, "K=");
+			cmd_text(217, 45, E_FONT, 0, "k=");
+
+			cmd_text(2, 85, E_FONT, 0, "B=");
+			cmd_text(107, 85, E_FONT, 0, "B=");
+			cmd_text(217, 85, E_FONT, 0, "m=");
+
+			cmd(gray);
+			cmd(BEGIN(LINES));
+			cmd(VERTEX2II(0, 35, 0, 0));
+			cmd(VERTEX2II(FT_Width, 35, 0, 0));
+			cmd(VERTEX2II(0, 175, 0, 0));
+			cmd(VERTEX2II(FT_Width, 175, 0, 0));
+			cmd(VERTEX2II(105, 0, 0, 0));
+			cmd(VERTEX2II(105, 175, 0, 0));
+			cmd(VERTEX2II(215, 0, 0, 0));
+			cmd(VERTEX2II(215, 175, 0, 0));
+
+			cmd(END());
 		break;
 
 		case STEPPER:

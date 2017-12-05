@@ -69,13 +69,26 @@ void FLASH_INIT(){
   HAL_FLASH_OB_Lock();
 }
 
-void FLASH_ERASE(){
+void FLASH_CALIBRATION_ERASE(){
 	HAL_FLASH_Unlock();
 
 	/* Fill EraseInit structure************************************************/
 	EraseInitStruct.TypeErase   = FLASH_TYPEERASE_PAGES;
-	EraseInitStruct.PageAddress = FLASH_USER_START_ADDR;
-	EraseInitStruct.NbPages     = (FLASH_USER_END_ADDR - FLASH_USER_START_ADDR)/FLASH_PAGE_SIZE;
+	EraseInitStruct.PageAddress = FLASH_USER_START_ADDR + FLASH_PAGE_SIZE * 0;
+	//EraseInitStruct.NbPages     = (FLASH_USER_END_ADDR - FLASH_USER_START_ADDR)/FLASH_PAGE_SIZE;
+	EraseInitStruct.NbPages     = 1;
+
+	HAL_FLASHEx_Erase(&EraseInitStruct, &PageError);
+	HAL_FLASH_Lock();
+}
+
+void FLASH_MATERIAL_ERASE(){
+	HAL_FLASH_Unlock();
+
+	/* Fill EraseInit structure************************************************/
+	EraseInitStruct.TypeErase   = FLASH_TYPEERASE_PAGES;
+	EraseInitStruct.PageAddress = FLASH_USER_START_ADDR + FLASH_PAGE_SIZE * 1;
+	EraseInitStruct.NbPages     = 1;
 
 	HAL_FLASHEx_Erase(&EraseInitStruct, &PageError);
 	HAL_FLASH_Lock();

@@ -20,6 +20,7 @@ typedef enum {FAILED = 0, PASSED = !FAILED} TestStatus;
 
 /* Uncomment this line to Disable Write Protection */
 #define WRITE_PROTECTION_DISABLE
+//#define FLASH_PAGE_SIZE 0x00000800
 #define ADDR_FLASH_PAGE_56  0x0801C000 /* Start @ of user Flash area */
 #define ADDR_FLASH_PAGE_58  0x0801D800 /* End @ of user Flash area */
 #define FLASH_USER_START_ADDR       ADDR_FLASH_PAGE_56   /* Start @ of user Flash area */
@@ -28,12 +29,17 @@ typedef enum {FAILED = 0, PASSED = !FAILED} TestStatus;
 
 #define DATA_32                     ((uint32_t)0x12345678)
 
-#define FLASH_INIT_Address FLASH_USER_START_ADDR + 0x00000000
+#define FLASH_CALIBRATION_INIT_Address FLASH_USER_START_ADDR + 0x00000000
 #define FK_Address FLASH_USER_START_ADDR + 0x00000100
 #define FB_Address FLASH_USER_START_ADDR + 0x00000150
 #define AK_Address FLASH_USER_START_ADDR + 0x00000200
 #define AB_Address FLASH_USER_START_ADDR + 0x00000250
 #define FF_Address FLASH_USER_START_ADDR + 0x00000300
+#define Ktor_Address FLASH_USER_START_ADDR + 0x00000350
+#define Mtor_Address FLASH_USER_START_ADDR + 0x00000400
+
+
+#define FLASH_MATERIAL_INIT_Address FLASH_USER_START_ADDR + FLASH_PAGE_SIZE
 
 //uint32_t Address = 0;
 uint32_t PageError;
