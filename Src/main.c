@@ -209,7 +209,7 @@ int main(void)
 	  //HAL_GPIO_TogglePin(GPIOB, GPIO_PIN_10);
 
 	  uint8_t tag = ft800memRead8(REG_TOUCH_TAG);
-	  uint8_t tag_, tag__ = 0;
+	  uint8_t tag__ = 0;
 
 	  if (tag != 0){
 
@@ -456,17 +456,8 @@ void TIM2_IRQHandler(void)
 	}
 	//#endif
 
-	//F = F1K * sum * (ADC_VOLTS / ADC_MAX_BITS) + F1B;
-	//F = sum * (ADC_VOLTS / ADC_MAX_BITS);
-	//F = sum;
-
 	F = F1K * F + F1B;
-	double Atmp = (double)ReadSSI();
-
-	A = (Atmp*A1K) + A1B;
-	//A = (Atmp*(A1K*1000))/1000 + A1B;
-	//A = (Atmp*A1K) + A1B;
-	//A = ((double)(A1K*Atmp))/1000 + A1B;
+	A = A1K*ReadSSI() + A1B;
 	/* USER CODE END TIM3_IRQn 1 */
 }
 

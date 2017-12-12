@@ -41,7 +41,7 @@ float MATERIAL_CHOOSEN;
 
 uint8_t hextoascii(uint8_t hex);
 uint8_t asciitohex(uint8_t ascii);
-void float_to_char_array(float value, uint8_t *arr, uint8_t* length, uint8_t digits);
+void float_to_char_array(float value, uint8_t *arr, uint8_t* length);
 void char_array_to_float(float *value, uint8_t *arr, uint8_t length);
 
 #endif /* INC_USERDEF_H_ */

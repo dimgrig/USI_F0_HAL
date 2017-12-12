@@ -126,15 +126,6 @@ void FLASH_WRITE(uint32_t WriteAddress, uint32_t WriteData)
 	HAL_FLASH_Lock();
 }
 
-void FLASH_READ(uint32_t ReadAddress, uint32_t* ReadData)
-{
-	HAL_FLASH_Unlock();
-	ReadData = ((__IO uint32_t*) ReadAddress);
-	//ReadData = ((__IO uint32_t*) ReadAddress);
-	HAL_FLASH_Lock();
-}
-
-
 void FLASH_WRITE_VALUE(uint32_t ValueAddress, uint32_t value)
 {
 	FLASH_WRITE(ValueAddress, value);

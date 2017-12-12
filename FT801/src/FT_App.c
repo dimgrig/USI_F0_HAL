@@ -191,14 +191,6 @@ ft_void_t FT_APP_Screen_Content(Screen_TypeDef SCREEN, State_TypeDef STATE,
 	unsigned int cmdBufferWr = 0x0000;											// Used to navigate command ring buffer
 	unsigned int cmdOffset = 0x0000;
 
-	//ft800memWrite32(REG_CMD_WRITE, 0);
-	//ft800memWrite32(REG_CMD_READ, 0);
-	//cli = dloffset;
-	//ft800memWrite32(REG_CMD_WRITE, cli);
-	//ft800memWrite32(REG_CMD_READ, cli);
-
-	//ft_uint32_t storedMaterial;
-
 	uint8_t value_c_length = 10;
 	char value_c[value_c_length];
 
@@ -209,9 +201,6 @@ ft_void_t FT_APP_Screen_Content(Screen_TypeDef SCREEN, State_TypeDef STATE,
 	} while (cmdBufferWr != cmdBufferRd);
 	//cli = cmdBufferWr;
 	cli = cli__;
-//	ft800memWrite16(REG_CMD_WRITE, cli__);
-//	ft800memWrite16(REG_CMD_READ, cli__);
-//	cli = 0;
 
 	ft800memWrite32(REG_CMD_READ, 0);
 	ft800memWrite32(REG_CMD_WRITE, 0);
@@ -407,7 +396,7 @@ ft_void_t FT_APP_Screen_Content(Screen_TypeDef SCREEN, State_TypeDef STATE,
 			cmd(TAG_MASK(1));
 			cmd(TAG(201));          // assign the tag value
 			cmd_fgcolor((tag==201)?button_color_hover:button_color);
-			float_to_char_array(F1K, &arr[0], &length, 3);
+			float_to_char_array(F1K, &arr[0], &length);
 			cmd_button(20, 37, 80, 30, E_FONT, 0, arr);
 			cmd(TAG_MASK(0));
 
@@ -415,7 +404,7 @@ ft_void_t FT_APP_Screen_Content(Screen_TypeDef SCREEN, State_TypeDef STATE,
 			cmd(TAG_MASK(1));
 			cmd(TAG(202));          // assign the tag value
 			cmd_fgcolor((tag==202)?button_color_hover:button_color);
-			float_to_char_array(F1B, &arr[0], &length, 3);
+			float_to_char_array(F1B, &arr[0], &length);
 			cmd_button(20, 77, 80, 30, E_FONT, 0, arr);
 			cmd(TAG_MASK(0));
 
@@ -423,7 +412,7 @@ ft_void_t FT_APP_Screen_Content(Screen_TypeDef SCREEN, State_TypeDef STATE,
 			cmd(TAG_MASK(1));
 			cmd(TAG(203));          // assign the tag value
 			cmd_fgcolor((tag==203)?button_color_hover:button_color);
-			float_to_char_array(A1K, &arr[0], &length, 7);
+			float_to_char_array(A1K, &arr[0], &length);
 			cmd_button(125, 37, 85, 30, E_FONT, 0, arr);
 			cmd(TAG_MASK(0));
 
@@ -431,7 +420,7 @@ ft_void_t FT_APP_Screen_Content(Screen_TypeDef SCREEN, State_TypeDef STATE,
 			cmd(TAG_MASK(1));
 			cmd(TAG(204));          // assign the tag value
 			cmd_fgcolor((tag==204)?button_color_hover:button_color);
-			float_to_char_array(A1B, &arr[0], &length, 3);
+			float_to_char_array(A1B, &arr[0], &length);
 			cmd_button(125, 77, 85, 30, E_FONT, 0, arr);
 			cmd(TAG_MASK(0));
 
@@ -447,7 +436,7 @@ ft_void_t FT_APP_Screen_Content(Screen_TypeDef SCREEN, State_TypeDef STATE,
 			cmd(TAG_MASK(1));
 			cmd(TAG(206));          // assign the tag value
 			cmd_fgcolor((tag==206)?button_color_hover:button_color);
-			float_to_char_array(Ktor, &arr[0], &length, 6);
+			float_to_char_array(Ktor, &arr[0], &length);
 			cmd_button(235, 37, 85, 30, E_FONT, 0, arr);
 			cmd(TAG_MASK(0));
 
@@ -455,7 +444,7 @@ ft_void_t FT_APP_Screen_Content(Screen_TypeDef SCREEN, State_TypeDef STATE,
 			cmd(TAG_MASK(1));
 			cmd(TAG(207));          // assign the tag value
 			cmd_fgcolor((tag==207)?button_color_hover:button_color);
-			float_to_char_array(Mtor, &arr[0], &length, 6);
+			float_to_char_array(Mtor, &arr[0], &length);
 			cmd_button(235, 77, 85, 30, E_FONT, 0, arr);
 			cmd(TAG_MASK(0));
 
@@ -507,7 +496,6 @@ ft_void_t FT_APP_Screen_Content(Screen_TypeDef SCREEN, State_TypeDef STATE,
 			cmd_button(110, 10, 100, 30, R_FONT, 0, "\x61");
 			cmd(TAG_MASK(0));
 
-			//***Keyboard(phost, tag);
 		break;
 	}
 
@@ -589,24 +577,12 @@ ft_uint16_t FT_APP_Screen_BasicScreen(Screen_TypeDef SCREEN)
 	ft_uint16_t dloffset = 0;
 
 	ft800memWrite16(REG_CMD_WRITE, cli);
-//	uint16_t TimeOut = 0;
 	do
 	{
-		cmdBufferRd = ft800memRead32(REG_CMD_READ);															// Read the graphics processor read pointer
-		cmdBufferWr = ft800memRead32(REG_CMD_WRITE); 														// Read the graphics processor write pointer
-//		TimeOut++;
-//		if(TimeOut > 0x0FFF){
-//			break;
-//		}
+		cmdBufferRd = ft800memRead32(REG_CMD_READ);	// Read the graphics processor read pointer
+		cmdBufferWr = ft800memRead32(REG_CMD_WRITE);// Read the graphics processor write pointer
 	} while (cmdBufferWr != cmdBufferRd);
-//	if(TimeOut > 0x0FFF){
-//
-//		ft800memWrite32(REG_CMD_WRITE, cli);
-////		ft800memWrite32(REG_CMD_READ, cli);
-//
-//		cmdBufferRd = ft800memRead32(REG_CMD_READ);															// Read the graphics processor read pointer
-//
-//	}
+
 
 	dloffset = ft800memRead16(REG_CMD_DL); // размер коируемого дисплей-листа
 
