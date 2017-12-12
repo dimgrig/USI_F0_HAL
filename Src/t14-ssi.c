@@ -21,8 +21,8 @@ uint32_t ReadSSI(void)
     uint8_t  bit_count; 
     uint32_t result = 0; 
     uint32_t  portdata; 
-    uint16_t N = 0;
-    uint16_t M = 2;
+    uint16_t N = 10;
+    uint16_t M = 20;
     
     SSI_CLK_HIGH();
     
@@ -30,34 +30,34 @@ uint32_t ReadSSI(void)
       i++;  
     
     SSI_CLK_LOW();
-    
+
     for (int i = 0; i < M; )
-      i++;  
-    
+      i++;
+
     SSI_CLK_HIGH();
-    
-    for (int i = 0; i < M; )
-      i++;  
-    
-    SSI_CLK_LOW();
-    
-    uint16_t j = 0;
-    
-    for (int i = 0; i < 100; )
-    {
-      i++; 
-      if (SSI_DATA_PORT()==0)
-      {
-        break;
-      }
-    }
-    
-    SSI_CLK_HIGH();
+
+//    for (int i = 0; i < M; )
+//      i++;
+//
+//    SSI_CLK_LOW();
+//
+//    uint16_t j = 0;
+//
+//    for (int i = 0; i < 100; )
+//    {
+//      i++;
+//      if (SSI_DATA_PORT()==0)
+//      {
+//        break;
+//      }
+//    }
+//
+//    SSI_CLK_HIGH();
          
     for (int i = 0; i < M; )
       i++;
         
-    for (bit_count=0; bit_count<19; bit_count++) 
+    for (bit_count=0; bit_count<18; bit_count++)
     { 
         // falling edge on clock port 
         //SSI_CLK_PORT &= ~(1 << SSI_CLK_BIT);         

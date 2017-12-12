@@ -13,6 +13,10 @@ void T14math(double *E, double *St, double *Sb, double *HB, double F, double a0,
 	//double a = a1 - k*pow(F, m);
 	double a = a1 - Ktor*pow(F, Mtor);
 
+	if (a == h) {
+		h += 0.001;
+	}
+
 	*E = 8.927/((1.333*(a - h)*sqrt(0.5*(a + h)))/F - 0.0000444);
 
 	double g = 215000/(215000 + *E);

@@ -221,6 +221,9 @@ int main(void)
 	  FLASH_WRITE_MATERIAL();
   } else {
 	  FLASH_READ_MATERIAL();
+
+	  STK = 0.343f; ///////////// убрать!!!!!!
+	  SBK = 3.3f;
   }
 
 
@@ -581,8 +584,12 @@ void TIM2_IRQHandler(void)
 	//F = sum;
 
 	F = F1K * F + F1B;
-	A = A1K*ReadSSI()+A1B;
+	double Atmp = (double)ReadSSI();
 
+	A = (Atmp*A1K) + A1B;
+	//A = (Atmp*(A1K*1000))/1000 + A1B;
+	//A = (Atmp*A1K) + A1B;
+	//A = ((double)(A1K*Atmp))/1000 + A1B;
 	/* USER CODE END TIM3_IRQn 1 */
 }
 

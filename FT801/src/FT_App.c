@@ -227,9 +227,9 @@ ft_void_t FT_APP_Screen_Content(Screen_TypeDef SCREEN, State_TypeDef STATE,
 	switch (SCREEN){
 		case MAIN:
 
-			sprintf(value_c, "%d.%d", (int)F, (int)( ( F - floor(F) ) * pow(10, 1) ));
+			sprintf(value_c, "%.1f", F);
 			cmd_text(155, 7, 22, 0, value_c);
-			sprintf(value_c, "%d.%d", (int)A, (int)( ( A - floor(A) ) * pow(10, 3) ));
+			sprintf(value_c, "%.3f", A);
 			cmd_text(265, 7, 22, 0, value_c);
 
 			switch (STATE)
@@ -266,11 +266,11 @@ ft_void_t FT_APP_Screen_Content(Screen_TypeDef SCREEN, State_TypeDef STATE,
 				cmd_button(110, 190, 100, 40, R_FONT, 0, "\x25\x1e\x42\x28\x14\x0c");
 				cmd(TAG_MASK(0));
 
-				sprintf(value_c, "%d.%d", (int)A0, (int)( ( A0 - floor(A0) ) * pow(10, 3) ));
+				sprintf(value_c, "%.3f", A0);
 				cmd_text(155, 42, 22, 0, value_c);
-				sprintf(value_c, "%d.%d", (int)F1, (int)( ( F1 - floor(F1) ) * pow(10, 1) ));
+				sprintf(value_c, "%.1f", F1);
 				cmd_text(155, 77, 22, 0, value_c);
-				sprintf(value_c, "%d.%d", (int)A1, (int)( ( A1 - floor(A1) ) * pow(10, 3) ));
+				sprintf(value_c, "%.3f", A1);
 				cmd_text(265, 77, 22, 0, value_c);
 			break;
 			case RESULTS:
@@ -281,22 +281,22 @@ ft_void_t FT_APP_Screen_Content(Screen_TypeDef SCREEN, State_TypeDef STATE,
 				cmd_button(110, 190, 100, 40, R_FONT, 0, "\x21\x2a\x26\x18");
 				cmd(TAG_MASK(0));
 
-				sprintf(value_c, "%d.%d", (int)A0, (int)( ( A0 - floor(A0) ) * pow(10, 3) ));
+				sprintf(value_c, "%.3f", A0);
 				cmd_text(155, 42, 22, 0, value_c);
-				sprintf(value_c, "%d.%d", (int)F1, (int)( ( F1 - floor(F1) ) * pow(10, 1) ));
+				sprintf(value_c, "%.1f", F1);
 				cmd_text(155, 77, 22, 0, value_c);
-				sprintf(value_c, "%d.%d", (int)A1, (int)( ( A1 - floor(A1) ) * pow(10, 3) ));
+				sprintf(value_c, "%.3f", A1);
 				cmd_text(265, 77, 22, 0, value_c);
-				sprintf(value_c, "%d.%d", (int)H, (int)( ( H - floor(H) ) * pow(10, 3) ));
+				sprintf(value_c, "%.3f", H);
 				cmd_text(265, 42, 22, 0, value_c);
 
-				sprintf(value_c, "%d.%d", (int)E, (int)( ( E - floor(E) ) * pow(10, 0) ));
+				sprintf(value_c, "%.0f", E);
 				cmd_text(155, 112, 22, 0, value_c);
-				sprintf(value_c, "%d.%d", (int)ST, (int)( ( ST - floor(ST) ) * pow(10, 2) ));
+				sprintf(value_c, "%.2f", ST);
 				cmd_text(265, 112, 22, 0, value_c);
-				sprintf(value_c, "%d.%d", (int)HB, (int)( ( HB - floor(HB) ) * pow(10, 2) ));
+				sprintf(value_c, "%.2f", HB);
 				cmd_text(155, 147, 22, 0, value_c);
-				sprintf(value_c, "%d.%d", (int)SB, (int)( ( SB - floor(SB) ) * pow(10, 2) ));
+				sprintf(value_c, "%.2f", SB);
 				cmd_text(265, 147, 22, 0, value_c);
 
 			break;
