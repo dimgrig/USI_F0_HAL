@@ -49,8 +49,15 @@ static FLASH_EraseInitTypeDef EraseInitStruct;
 /*Variable used to handle the Options Bytes*/
 static FLASH_OBProgramInitTypeDef OptionsBytesStruct;
 
+void FLASH_INIT();
+void FLASH_CALIBRATION_ERASE();
+void FLASH_MATERIAL_ERASE();
 void FLASH_READ(uint32_t ReadAddress, uint32_t* ReadData);
 void FLASH_WRITE_VALUE(uint32_t ValueAddress, uint32_t value);
 uint32_t FLASH_READ_VALUE(uint32_t ValueAddress);
+void FLASH_WRITE_CALIBRATION();
+void FLASH_READ_CALIBRATION();
+void FLASH_WRITE_MATERIAL();
+void FLASH_READ_MATERIAL();
 
 #endif /* INC_T14_FLASH_H_ */
