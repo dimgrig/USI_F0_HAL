@@ -10,6 +10,9 @@
 #ifndef INC_USERDEF_H_
 #define INC_USERDEF_H_
 
+//#define ADMIN_INFO
+//#define FILTERING
+
 //#define A1K 0.00002861
 //0.000057220
 //#define A1B 0
@@ -35,9 +38,12 @@ float STK;
 float SBK;
 
 #define MATERIAL_init 211
+#define MATERIAL_SIZE 10
 
 float MATERIAL_CHOOSEN;
-
+float MATERIAL_STK[MATERIAL_SIZE];
+float MATERIAL_SBK[MATERIAL_SIZE];
+uint8_t MATERIAL_PAGE;
 
 uint8_t hextoascii(uint8_t hex);
 uint8_t asciitohex(uint8_t ascii);

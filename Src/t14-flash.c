@@ -242,11 +242,54 @@ void FLASH_READ_CALIBRATION(){
 }
 
 void FLASH_WRITE_MATERIAL(){
+	float WrittenValue = 0;
+	uint32_t WrittenValue_int32 = 0;
+
+	char data_[sizeof(float)] = {0x00, 0x00, 0x00, 0x00};
+
 	FLASH_MATERIAL_ERASE();
 	FLASH_WRITE_VALUE(FLASH_MATERIAL_INIT_Address, MATERIAL_CHOOSEN);
+
+	for (int i=0, address = FLASH_MATERIAL_INIT_Address + 0x00000050; i < MATERIAL_SIZE ; i++) {
+		WrittenValue = MATERIAL_STK[i];
+		memcpy(data_, &WrittenValue, sizeof(WrittenValue));    // send data
+		WrittenValue_int32 = (((data_[3]<<24)&0xff000000) | ((data_[2]<<16)&0xff0000) | ((data_[1]<<8)&0xff00) | ((data_[0]<<0)&0xff));
+		FLASH_WRITE_VALUE(address, WrittenValue_int32);
+		address += 0x00000050;
+
+		WrittenValue = MATERIAL_SBK[i];
+		memcpy(data_, &WrittenValue, sizeof(WrittenValue));    // send data
+		WrittenValue_int32 = (((data_[3]<<24)&0xff000000) | ((data_[2]<<16)&0xff0000) | ((data_[1]<<8)&0xff00) | ((data_[0]<<0)&0xff));
+		FLASH_WRITE_VALUE(address, WrittenValue_int32);
+		address += 0x00000050;
+	}
+
 	FLASH_READ_MATERIAL();
 }
 
 void FLASH_READ_MATERIAL(){
+	char data_[sizeof(float)] = {0x00, 0x00, 0x00, 0x00};
+
 	MATERIAL_CHOOSEN = FLASH_READ_VALUE(FLASH_MATERIAL_INIT_Address);
+
+	for (int i=0, address = FLASH_MATERIAL_INIT_Address + 0x00000050; i < MATERIAL_SIZE ; i++) {
+		uint32_t STK_int32 = FLASH_READ_VALUE(address);
+		data_[0] = (STK_int32>>0) & 0xFF;
+		data_[1] = (STK_int32>>8) & 0xFF;
+		data_[2] = (STK_int32>>16) & 0xFF;
+		data_[3] = (STK_int32>>24) & 0xFF;
+		memcpy(&MATERIAL_STK[i], data_, sizeof(MATERIAL_STK[i]));
+		address += 0x00000050;
+
+		uint32_t SBK_int32 = FLASH_READ_VALUE(address);
+		data_[0] = (SBK_int32>>0) & 0xFF;
+		data_[1] = (SBK_int32>>8) & 0xFF;
+		data_[2] = (SBK_int32>>16) & 0xFF;
+		data_[3] = (SBK_int32>>24) & 0xFF;
+		memcpy(&MATERIAL_SBK[i], data_, sizeof(MATERIAL_SBK[i]));
+		address += 0x00000050;
+	}
+
+	STK = MATERIAL_STK[(int)MATERIAL_CHOOSEN - 210];
+	SBK = MATERIAL_SBK[(int)MATERIAL_CHOOSEN - 210];
 }

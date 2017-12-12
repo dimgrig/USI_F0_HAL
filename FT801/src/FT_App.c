@@ -213,6 +213,9 @@ ft_void_t FT_APP_Screen_Content(Screen_TypeDef SCREEN, State_TypeDef STATE,
 		cmd_number(10, 60, 16, 0, nmb);
 	#endif
 
+	uint8_t length=0;
+	uint8_t arr[32];
+
 	switch (SCREEN){
 		case MAIN:
 
@@ -324,16 +327,16 @@ ft_void_t FT_APP_Screen_Content(Screen_TypeDef SCREEN, State_TypeDef STATE,
 			cmd_button( 110, 60, 100, 40, R_FONT, 0, "\x17\x02\x1a\x14\x04\x24\x20\x06\x18\x02"); //Êàëèáğîâêà
 			cmd(TAG_MASK(0));
 
-			cmd(TAG_MASK(1));
-			cmd(TAG(6));          // assign the tag value
-			cmd_fgcolor((tag==6)?button_color_hover:button_color);
-			cmd_button( 110, 110, 100, 40, R_FONT, 0, "\x33\x02\x08"); //Øàã
-			cmd(TAG_MASK(0));
+			#ifdef ADMIN_INFO
+				cmd(TAG_MASK(1));
+				cmd(TAG(6));          // assign the tag value
+				cmd_fgcolor((tag==6)?button_color_hover:button_color);
+				cmd_button( 110, 110, 100, 40, R_FONT, 0, "\x33\x02\x08"); //Øàã
+				cmd(TAG_MASK(0));
+			#endif
 
 		break;
 		case MATERIAL:
-
-			//**storedMaterial = FLASH_Read_DataWord(0);
 
 			cmd(COLOR_RGB(0xff,0xd8,0x00));
 
@@ -343,44 +346,114 @@ ft_void_t FT_APP_Screen_Content(Screen_TypeDef SCREEN, State_TypeDef STATE,
 			cmd_button(5, 190, 100, 40, R_FONT, 0, "\x5f");
 			cmd(TAG_MASK(0));
 
+			ft_uint8_t MATERIAL_N_PAGES = MATERIAL_SIZE/5;
+			if (MATERIAL_SIZE%5) {
+				MATERIAL_N_PAGES++;
+			}
 
-			if (tag >= 211 & tag <=213) {
+
+			if (MATERIAL_PAGE == 0){
 				cmd(TAG_MASK(1));
-				cmd(TAG(211));          // assign the tag value
-				cmd_fgcolor((tag==211)?button_color_hover:button_color);
-				cmd_button(10, 10, 100, 30, R_FONT, 0, "\x54");
+				cmd(TAG(99));          // assign the tag value
+				cmd_fgcolor((tag==99)?button_color_hover:button_color);
+				cmd_button(215, 190, 100, 40, R_FONT, 0, "\x25\x1a\x0c\x0a\x51"); //Ñëåä
 				cmd(TAG_MASK(0));
-
+			}
+			else if (MATERIAL_PAGE == MATERIAL_N_PAGES-1){
 				cmd(TAG_MASK(1));
-				cmd(TAG(212));          // assign the tag value
-				cmd_fgcolor((tag==212)?button_color_hover:button_color);
-				cmd_button(10, 50, 100, 30, R_FONT, 0, "\x55");
-				cmd(TAG_MASK(0));
-
-				cmd(TAG_MASK(1));
-				cmd(TAG(213));          // assign the tag value
-				cmd_fgcolor((tag==213)?button_color_hover:button_color);
-				cmd_button(10, 90, 100, 30, R_FONT, 0, "\x56");
+				cmd(TAG(98));          // assign the tag value
+				cmd_fgcolor((tag==98)?button_color_hover:button_color);
+				cmd_button(110, 190, 100, 40, R_FONT, 0, "\x21\x24\x0c\x0a\x51"); //Ïğåä
 				cmd(TAG_MASK(0));
 			} else {
 				cmd(TAG_MASK(1));
-				cmd(TAG(211));          // assign the tag value
-				cmd_fgcolor((MATERIAL_CHOOSEN==211)?button_color_selected:button_color);
-				cmd_button(10, 10, 100, 30, R_FONT, 0, "\x54");
+				cmd(TAG(98));          // assign the tag value
+				cmd_fgcolor((tag==98)?button_color_hover:button_color);
+				cmd_button(110, 190, 100, 40, R_FONT, 0, "\x21\x24\x0c\x0a\x51"); //Ïğåä
 				cmd(TAG_MASK(0));
 
 				cmd(TAG_MASK(1));
-				cmd(TAG(212));          // assign the tag value
-				cmd_fgcolor((MATERIAL_CHOOSEN==212)?button_color_selected:button_color);
-				cmd_button(10, 50, 100, 30, R_FONT, 0, "\x55");
-				cmd(TAG_MASK(0));
-
-				cmd(TAG_MASK(1));
-				cmd(TAG(213));          // assign the tag value
-				cmd_fgcolor((MATERIAL_CHOOSEN==213)?button_color_selected:button_color);
-				cmd_button(10, 90, 100, 30, R_FONT, 0, "\x56");
+				cmd(TAG(99));          // assign the tag value
+				cmd_fgcolor((tag==99)?button_color_hover:button_color);
+				cmd_button(215, 190, 100, 40, R_FONT, 0, "\x25\x1a\x0c\x0a\x51"); //Ñëåä
 				cmd(TAG_MASK(0));
 			}
+
+
+
+			cmd_text(5, 7, R_FONT, 0, "\x27\x14\x22"); //Òèï
+			cmd_text(110, 7, R_FONT, 0, "\x13\x1c\x42\x62"); //Èìÿ?
+			cmd_text(215, 7, R_FONT, 0, "\x13\x1c\x42\x62");
+
+			ft_uint32_t clr = 0;
+			if (tag >= 211 & tag <=210+MATERIAL_SIZE) {
+				clr = button_color_hover;
+			} else {
+				clr = button_color_selected;
+			}
+
+			char *MATERIAL_NAMES[MATERIAL_SIZE] = {
+					"\x25\x28\x02\x1a\x14", // Ñòàëè
+					// \x54 - .  /   \x26\x22\x1a\x81 - ñïë.
+					"\x01\x1a\x40\x1c\x51\x26\x22\x1a\x51", // Àëşì.ñïë.
+					"\x27\x14\x28\x02\x1e\x51\x26\x22\x1a\x51", // Òèòàí.ñïë.
+					"\x1b\x02\x08\x1e\x51\x26\x22\x1a\x51", // Ìàãí.ñïë.
+					"\x1b\x0c\x0a\x1e\x51\x26\x22\x1a\x51", // Ìåäí.ñïë.
+					"\x1d\x14\x18\x0c\x1a\x51\x26\x22\x1a\x51", // Íèêåë.ñïë.
+					"\x21\x20\x1a\x3c\x12\x20\x06\x51\x54", // Ïîëüçîâ.1
+					"\x21\x20\x1a\x3c\x12\x20\x06\x51\x55", // Ïîëüçîâ.2
+					"\x21\x20\x1a\x3c\x12\x20\x06\x51\x56", // Ïîëüçîâ.3
+					"\x21\x20\x1a\x3c\x12\x20\x06\x51\x57",// Ïîëüçîâ.4
+			};
+
+
+			for (int i=MATERIAL_PAGE*5, j=0; i < MATERIAL_PAGE*5 + 5 ; i++) {
+
+				if (i >= MATERIAL_SIZE) {
+					break;
+				}
+
+				cmd(TAG_MASK(1));
+				cmd(TAG(210 + i));          // assign the tag value
+				cmd_fgcolor((MATERIAL_CHOOSEN==(210 + i))?clr:button_color);
+				cmd_button(5, 37 + j*30, 100, 25, R_FONT, 0, MATERIAL_NAMES[i]);
+				cmd(TAG_MASK(0));
+				length=0;
+
+				cmd(TAG_MASK(1));
+				cmd(TAG(101 + 2*i));          // assign the tag value
+				cmd_fgcolor((tag==(101 + 2*i))?button_color_hover:button_color);
+				float_to_char_array(MATERIAL_STK[i], &arr[0], &length);
+				cmd_button(110, 37 + j*30, 100, 25, E_FONT, 0, arr);
+				cmd(TAG_MASK(0));
+				length=0;
+
+				cmd(TAG_MASK(1));
+				cmd(TAG(101 + 2*i + 1));          // assign the tag value
+				cmd_fgcolor((tag==(101 + 2*i + 1))?button_color_hover:button_color);
+				float_to_char_array(MATERIAL_SBK[i], &arr[0], &length);
+				cmd_button(215, 37 + j*30, 100, 25, E_FONT, 0, arr);
+				cmd(TAG_MASK(0));
+				length=0;
+
+				j++;
+			}
+
+			#ifdef ADMIN_INFO
+				//cmd_number(10, 180, E_FONT, 0, MATERIAL_PAGE);
+				length=0;
+				float_to_char_array(MATERIAL_CHOOSEN, &arr[0], &length);
+				cmd_text(10, 200, E_FONT, 0, arr);
+
+				length=0;
+				float_to_char_array(STK, &arr[0], &length);
+				cmd_text(10, 140, E_FONT, 0, arr);
+
+				length=0;
+				float_to_char_array(SBK, &arr[0], &length);
+				cmd_text(10, 160, E_FONT, 0, arr);
+			#endif
+
 		break;
 		case CALIBRATION:
 			cmd(COLOR_RGB(0xff,0xd8,0x00));
@@ -391,8 +464,7 @@ ft_void_t FT_APP_Screen_Content(Screen_TypeDef SCREEN, State_TypeDef STATE,
 			cmd_button(5, 190, 100, 40, R_FONT, 0, "\x5f");
 			cmd(TAG_MASK(0));
 
-			uint8_t length=0;
-			uint8_t arr[32];
+
 			cmd(TAG_MASK(1));
 			cmd(TAG(201));          // assign the tag value
 			cmd_fgcolor((tag==201)?button_color_hover:button_color);
@@ -787,7 +859,7 @@ ft_void_t Keyboard(ft_uint16_t tag, uint8_t *arr, uint8_t* length)
 //	Pendown = ((Ft_Gpu_Hal_Rd32(phost,REG_TOUCH_DIRECT_XY)>>31) & 0x01);
 
 
-	if(CurrTag > 200)
+	if(CurrTag > 100)
 	{
 		CurrTag=0;
 	}

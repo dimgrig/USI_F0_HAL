@@ -91,9 +91,7 @@ static void MX_TIM2_Init(void);
 
 /* USER CODE BEGIN 0 */
 
-//#define ADMIN_INFO
 
-//#define FILTERING
 //#ifdef FILTERING
 #define SPS 5000
 #define Trc 0.001f
@@ -182,12 +180,13 @@ int main(void)
 
   if ((FLASH_MATERIAL_INIT_Data == 0xFFFFFFFF) || (0 == 1)) { //1==1 if manual
 	  MATERIAL_CHOOSEN = MATERIAL_init;
+	  for (int i=0; i < MATERIAL_SIZE ; i++) {
+		  MATERIAL_STK[i] = STK_init;
+		  MATERIAL_SBK[i] = SBK_init;
+	  }
 	  FLASH_WRITE_MATERIAL();
   } else {
 	  FLASH_READ_MATERIAL();
-
-	  STK = 0.343f; ///////////// убрать!!!!!!
-	  SBK = 3.3f;
   }
 
   FT_APP_BootupConfig();
@@ -282,6 +281,7 @@ int main(void)
 					case SETTINGS:
 						SCREEN = MATERIAL;
 						dloffset = FT_APP_Screen_BasicScreen(SCREEN);
+						MATERIAL_PAGE = 0;
 					break;
 					case MATERIAL:
 					break;
@@ -339,6 +339,12 @@ int main(void)
 					HAL_Delay(100);
 				}
 			break;
+			case 98:
+				MATERIAL_PAGE -= 1;
+			break;
+			case 99:
+				MATERIAL_PAGE += 1;
+			break;
 			case 205:
 				if (F1F == 1) {
 					F1F = 0;
@@ -347,13 +353,14 @@ int main(void)
 				}
 				FLASH_WRITE_CALIBRATION();
 			break;
-			case 201:
-			case 202:
-			case 203:
-			case 204:
+			case 201:	case 202:	case 203:	case 204:	case 206:	case 207:
 			//case 205:
-			case 206:
-			case 207:
+			case 101:	case 102:	case 103:	case 104:	case 105:
+			case 106:	case 107:	case 108:	case 109:	case 110:
+			case 111:	case 112:	case 113:	case 114:	case 115:
+			case 116:	case 117:	case 118:	case 119:	case 120:
+			case 121:	case 122:	case 123:	case 124:	case 125:
+			case 126:	case 127:	case 128:	case 129:	case 130:
 				tag__ = tag;
 				uint8_t length = 0;
 				uint8_t arr[32];
@@ -370,9 +377,8 @@ int main(void)
 				if (tag == 1) {
 					;//cancel
 				} else if (tag == 3) { //save new values
-					if ((tag__ == 201) || (tag__ == 202) ||
-						(tag__ == 203) || (tag__ == 204) ||
-						(tag__ == 206) || (tag__ == 207)){
+					if ((tag__ == 201) || (tag__ == 202) ||	(tag__ == 203) ||
+						(tag__ == 204) || (tag__ == 206) || (tag__ == 207)){
 
 						float user_entered = 0;
 						char_array_to_float(&user_entered, &arr[0], length);
@@ -404,11 +410,31 @@ int main(void)
 							break;
 						}
 					}
+					if ((tag__ == 101) || (tag__ == 102) ||	(tag__ == 103) || (tag__ == 104) || (tag__ == 105) ||
+						(tag__ == 106) || (tag__ == 107) ||	(tag__ == 108) || (tag__ == 109) || (tag__ == 110) ||
+						(tag__ == 111) || (tag__ == 112) ||	(tag__ == 113) || (tag__ == 114) || (tag__ == 115) ||
+						(tag__ == 116) || (tag__ == 117) ||	(tag__ == 118) || (tag__ == 119) || (tag__ == 120) ||
+						(tag__ == 121) || (tag__ == 122) ||	(tag__ == 123) || (tag__ == 124) || (tag__ == 125) ||
+						(tag__ == 126) || (tag__ == 127) ||	(tag__ == 128) || (tag__ == 129) || (tag__ == 130) ){
+
+						float user_entered = 0;
+						char_array_to_float(&user_entered, &arr[0], length);
+
+						uint8_t nmb = tag__ - 100 - 1;
+						if (nmb%2 == 1) {
+							MATERIAL_SBK[nmb/2] = user_entered;
+						} else {
+							MATERIAL_STK[nmb/2] = user_entered;
+						}
+
+						FLASH_WRITE_MATERIAL();
+					}
 				}
 			break;
-			case 211:
-			case 212:
-			case 213:
+			case 210:	case 211:	case 212:	case 213:	case 214:
+			case 215:	case 216:	case 217:	case 218:	case 219:
+			case 220:	case 221:	case 222:	case 223:	case 224:
+			case 225:	case 226:	case 227:	case 228:	case 229:
 				MATERIAL_CHOOSEN = tag;
 				FLASH_WRITE_MATERIAL();
 			break;

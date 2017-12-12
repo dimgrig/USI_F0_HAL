@@ -34,6 +34,8 @@ ft_uint8_t PrevTag = 0;
 ft_uint8_t CurrTextIdx = 0;
 
 
+
+
 ft_void_t FT_APP_BootupConfig();
 ft_void_t FT_APP_Calibrate(ft_uint8_t mode);
 ft_void_t FT_APP_Screen_Content(Screen_TypeDef SCREEN, State_TypeDef STATE,
