@@ -10,6 +10,9 @@ void T14math(double *E, double *St, double *Sb, double *HB, double F, double a0,
 {
 	//printf (" F: %.3f\n a0: %.3f\n a1: %.3f\n h: %.3f \n", F, a0 , a1, h); 
 	
+	a1 = a1 - a0;
+	h = h - a0;
+
 	//double a = a1 - k*pow(F, m);
 	double a = a1 - Ktor*pow(F, Mtor);
 

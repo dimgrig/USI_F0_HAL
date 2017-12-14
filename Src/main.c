@@ -484,6 +484,18 @@ void TIM2_IRQHandler(void)
 
 	F = F1K * F + F1B;
 	A = A1K*ReadSSI() + A1B;
+
+
+//	{
+//		F = 30.0;
+//		if (STATE == TOUCH) {
+//			A = 10.0f;
+//		} else if (STATE == REMOVAL) {
+//			A = 10.01f;
+//		} else {
+//			A = 10.05f;
+//		}
+//	}
 	/* USER CODE END TIM3_IRQn 1 */
 }
 
